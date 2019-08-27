@@ -1,0 +1,21 @@
+<h3 class="form-signin-heading">综合查询(北京时间)</h3>
+<select onChange="location.replace(this.options[this.selectedIndex].value)"> 
+<option value="/gamelog/item/user_all">北京时间</option> 
+<option value="/gamelog/item/user_allUTC">UTC时间</option> 
+<option value="/gamelog/item/user_allPST">PST时间</option> 
+</select>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="hidden" class="input-block-level" id="serverid" name="serverid" value="1" req="true" placeholder="服务器ID" exp="^[1-9]\d*$" ts='服务器ID格式错误'>
+<input type="text" class="input-block-level" id="StartTime" name="StartTime" req="true" placeholder="查询开始时间(北京时间)" ts='查询开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text" class="input-block-level" id="EndTime" name="EndTime" req="true" placeholder="查询结束时间(北京时间)" ts='查询结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="hidden" class="input-block-level" id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='10000'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">查询</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>

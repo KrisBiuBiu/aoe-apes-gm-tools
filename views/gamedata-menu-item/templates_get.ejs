@@ -1,0 +1,12 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="id" name="id" req="true" placeholder="模板ID" exp="^[1-9]\d*$" ts='模板ID格式错误'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+    F.st();
+</script>

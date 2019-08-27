@@ -1,0 +1,29 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="region" name="region" value="1" req="true" placeholder="大区ID" exp="^[1-9]\d*$" ts='大区ID格式错误'>
+<input type="text" class="input-block-level" id="serverid" name="serverid" req="true" placeholder="服务器ID" exp="^[1-9]\d*$" ts='服务器ID格式错误'>
+<input type="text" class="input-block-level" id="userid" name="userid" req="true" placeholder="玩家ID" exp="^[1-9]\d*$" ts='玩家ID格式错误'>
+<input type="text" class="input-block-level" id="Package_Kind" name="Package_Kind" req="true" placeholder="0:无分类,1:新手礼包,2:成长礼包" exp="^[0-2]$" ts='礼包种类格式错误'>
+<input type="text" class="input-block-level" id="Tag" name="Tag" req="true" placeholder="1:热销,2:推荐,3:限购" exp="^[1-3]$" ts='礼包标签格式错误'>
+<input type="text" class="input-block-level" id="Price" name="Price" req="true" placeholder="礼包价格 5 10 20 50 100" exp="^100$|^50$|^20$|^10$|^5$|^1$" ts='礼包价格格式错误'>
+<input type="text" class="input-block-level" id="Statu" name="Statu" req="true" placeholder="礼包状态码 0:常规礼包,1:伤残礼包,2:回归礼包,3:滚服礼包,4:单场损失Power" exp="^[0-4]$" ts='礼包状态码格式错误'>
+<input type="text" class="input-block-level" id="Package_Priority" name="Package_Priority" req="true" placeholder="显示顺序，数字越大越靠上" exp="^[1-9]\d*$" ts='显示顺序格式错误'>
+<input type="text" class="input-block-level" id="Diamonds" name="Diamonds" req="true" placeholder="得到的金币" exp="^[1-9]\d*$|^0$" ts='得到的金币格式错误'>
+<input type="text" class="input-block-level" id="Title" name="Title" req="true" placeholder="礼包标题" ts='礼包标题格式错误'>
+<input type="text" class="input-block-level" id="Title_D" name="Title_D" req="true" placeholder="礼包描述" ts='礼包描述格式错误'>
+<input type="text" class="input-block-level" id="SubTitle1" name="SubTitle1" req="true" placeholder="礼包副标题比如400%" ts='礼包副标题格式错误'>
+<input type="text" class="input-block-level" id="SubTitle2" name="SubTitle2" req="true" placeholder="礼包副标题比 如 More" ts='礼包副标题格式错误'>
+<input type="text" class="input-block-level" id="Theme" name="Theme" req="true" placeholder="礼包外观图片" ts='礼包外观图片格式错误'>
+<input type="text" class="input-block-level" id="Limited" name="Limited" req="true" placeholder="是否限购 0不限购 其他数字代表限购数量" exp="^[0-9]\d*$" ts='限购格式错误'>
+<input type="text" class="input-block-level" id="LastTime" name="LastTime" req="true" placeholder="礼包持续时间 秒" exp="^[1-9]\d*$" ts=礼包持续时间格式错误'>
+<input type="text" class="input-block-level" id="StartTime" name="StartTime" req="true" placeholder="礼包开始时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='礼包开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text" class="input-block-level" id="Items" name="Items" req="true" placeholder="道具内容 道具ID:数量:使用方式,... (使用方式:0方包裹,1:直接使用,2:联盟礼包)" exp="^(([1-9]\d*\:){1}([1-9]\d*\:){1}([012])\,){0,}([1-9]\d*\:){1}([1-9]\d*\:){1}([012]){1}$" ts='道具内容格式错误'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>

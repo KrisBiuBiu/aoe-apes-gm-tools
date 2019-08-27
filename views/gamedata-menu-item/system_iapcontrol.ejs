@@ -1,0 +1,15 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="region" name="region" value="1" req="true" placeholder="大区ID" exp="^[1-9]\d*$" ts='大区ID格式错误'>
+<input type="text" class="input-block-level" id="pkgid" name="pkgid" req="true" placeholder="礼包ID" exp="^[1-9]\d*$" ts='礼包ID格式错误'>
+<label class='radio-inline'><input type="radio" name="opval" id="opval" value="1" checked="true" req='true'>添加</label>
+<label class='radio-inline'><input type="radio" name="opval" id="opval" value="0" req='true'> 扣除</label>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+    F.st();
+</script>

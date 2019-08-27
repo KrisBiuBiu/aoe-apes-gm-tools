@@ -1,0 +1,115 @@
+<style type="text/css">
+	td{
+		text-overflow:ellipsis;
+		white-space:nowrap;
+		overflow:hidden;
+	}
+	table{
+		table-layout:fixed;
+	}
+</style>
+<%
+var stime = data.StartTime;
+var etime = data.EndTime;
+%>
+<form action="/gamelog/result/user_rebel" method="post">
+
+<p>打怪明细</p>
+<select id="serverid" name="serverid">
+  <option value="1">--请选择服务器--</option>
+  <% for(var i=1;i < 10;i++){ %>
+  <option value = "<%=i %>"><%=i %></option>
+  <% } %>
+</select>
+<input type="text" id="StartTime" name="StartTime" value="<%=stime %>" req="true" placeholder="开始时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="hidden" id="EndTime" name="EndTime" value="<%=etime %>" req="true" placeholder="结束时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="hidden" id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='500'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+<p>查看当日注册玩家<input type="checkbox" id="test" name="test" value="yes"></p>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+<script type="text/javascript">
+  F.st();
+</script>
+<% if(data.ret==0){ %>
+
+<% if(data.result.length>0){%>
+<div class="row-fluid">
+	<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+</div>
+<p>当日打怪次数共计:<b><font color="red"><%=data.result.length %></font></b></p>
+<% } %>
+<div class="table-responsive">
+<table border='1' id="targetTable" name="targetTable">
+	<thead>
+		<tr>
+			<th>序号</th>
+			<th>user_id</th>
+			<th>CreatedDate</th>
+			<th>英雄等级</th>
+			<th>怪物点坐标</th>
+			<th>怪物点等级</th>
+			<th>怪物剩余血量</th>
+			<th>玩家剩余体力</th>
+			<th>本次消耗体力</th>
+			<th>本次伤害血量</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if(data.result.length>0){%>
+		<% var k=1 %>
+		<% data.result.forEach(function(v){ %>
+		<tr>
+		<td><b><%=k %></b></td>
+		<td><b><font color="blue"><%=v.user_id %></font></b></td>
+		<td width="150px"><b><%=v.created_date %></b></td>
+		<td><b><font color="blue"><%=v.level %></font></b></td>
+		<td><b>(<%=v.x %>,<%=v.y %>)</b></td>
+		<td><b><font color="blue"><%=v.rebel_level %></font></b></td>
+		<td><b><%=v.left_hp %></b></td>
+		<td><b><font color="blue"><%=v.left_points %></font></b></td>
+		<td><b><%=v.points %></b></td>
+		<td><b><font color="blue"><%=v.hurt %></font></b></td>
+		</tr>
+		<% k++; %>
+		<% }) %>
+		<% } %>
+	</tbody>
+</table>
+</div>
+<% }else{ %>
+<p><%= data.result %></p>
+<% } %>
+
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '玩家打怪行为统计.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '玩家打怪行为统计'));
+    });
+});
+</script>

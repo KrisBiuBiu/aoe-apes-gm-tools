@@ -1,0 +1,87 @@
+<h2>玩家包裹查询结果:</h2>
+<%
+ var itemarray = {
+ 	97:"5%攻击增强(12小时)",
+ } 
+%>
+<table class="table table-striped table-hover table-bordered" id="targetTable" name="targetTable">
+<% data = data.toString() %>
+<% data = data.replace(/{/g,'') %>
+<% data = data.replace(/}/g,'') %>
+<% data = data.replace(/"ret": 0,/g,'') %>
+<% data = data.replace(/"msg": /g,'') %>
+<% data = data.replace(/"info": /g,'') %>
+<% data = data.replace(/"info": /g,'') %>
+<% data = data.replace(/"code"/g,' 11') %>
+<% data = data.replace(/"name"/g,'12') %>
+<% data = data.replace(/"quantity"/g,'13') %>
+<% data = data.replace(/"subtype"/g,'14') %>
+<% data = data.replace(/"price"/g,'15') %>
+<% data = data.replace(/"itemid"/g,'16') %>
+<% data = data.slice(56,-1) %>
+<% data1 = data.split(',') %>
+<p><%=data1 %></p>
+<% var codearray = new Array(); %>
+<% var namearray = new Array(); %>
+<% var quanlityarray = new Array(); %>
+<% var subtypearray = new Array(); %>
+<% var pricearray = new Array(); %>
+<% var itemidarray = new Array(); %>
+<% data1.forEach(function(v){ %>
+
+	<tr>
+		<%
+		data2 = v.split(':');
+		if(data2[0] == 11 ){
+			codearray.push(data2[1]);
+		}
+		if(data2[0] == 12){
+			namearray.push(data2[1]);
+		}
+		if(data2[0] == 13){
+			quanlityarray.push(data2[1]);
+		}
+		if(data2[0] == 14){
+			subtypearray.push(data2[1]);
+		}
+		if(data2[0] == 15){
+			pricearray.push(data2[1]);
+		}
+		if(data2[0] == 16){
+			itemidarray.push(data2[1]);
+		}
+		%>
+	</tr>
+<% }) %>
+<!--
+<p><%=codearray.length %></p>
+<p><%=namearray.length %></p>
+<p><%=quanlityarray.length %></p>
+<p><%=subtypearray.length %></p>
+<p><%=pricearray.length %></p>
+<p><%=itemidarray.length %></p>
+-->
+</table>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-bordered">
+	<tr>
+	<th>道具名称</th>
+	<% codearray.forEach(function(v){ %>
+		<td><%=v %></td>
+	<% }) %>
+	</tr>
+	<tr>
+	<th>道具数量</th>
+	<% quanlityarray.forEach(function(v){ %>
+		<td><%=v %></td>
+	<% }) %>
+	</tr>
+	<tr>
+	<th>道具价格</th>
+	<% pricearray.forEach(function(v){ %>
+		<td><%=v %></td>
+	<% }) %>
+	</tr>
+</table>
+</div>
+

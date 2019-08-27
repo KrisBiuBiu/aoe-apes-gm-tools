@@ -1,0 +1,81 @@
+<style type="text/css">
+	td{
+		text-overflow:ellipsis;
+		white-space:nowrap;
+		overflow:hidden;
+	}
+	table{
+		table-layout:fixed;
+	}
+</style>
+<h2> 玩家流失统计:</h2>
+<% if(data.ret==0){ %>
+
+<% if(data.countArray.length>0){%>
+<div class="row-fluid">
+	<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+</div>
+<% } %>
+<div class="table-responsive">
+<table id="targetTable" name="targetTable">
+	<thead>
+		<tr>
+			<th>29组数据</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if(data.countArray.length>0){%>
+		<% k=1; %>
+		<% data.countArray.forEach(function(v){ %>
+		<tr>
+		<% var nbs = data.Newbie; %>
+		<% var nb; %>
+		<% for(var i in nbs){ %>
+		<% if(i == k){ %>
+		<% nb = nbs[i]; %>
+		<% break; %>
+		<% } %>
+		<% } %>
+		<td><b>NewbieID<%=k %><font color="blue">(<%=nb %>)</font></td>
+		<td><b><%=v %></b></td>
+		</tr>
+		<% k++; %>
+		<% }) %>
+		<% } %>
+	</tbody>
+</table>
+</div>
+<% }else{ %>
+<p><%= data.result %></p>
+<% } %>
+
+
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '玩家充值订单数据.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '玩家充值订单数据'));
+    });
+});
+</script>

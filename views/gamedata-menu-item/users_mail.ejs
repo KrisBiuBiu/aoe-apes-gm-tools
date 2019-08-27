@@ -1,0 +1,15 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="region" name="region" value="1" req="true" placeholder="大区ID" exp="^[1-9]\d*$" ts='大区ID格式错误'>
+<input type="text" class="input-block-level" id="userid" name="userid" req="true" placeholder="玩家ID" exp="^[1-9]\d*$" ts='玩家ID格式错误'>
+<input type="text" class="input-block-level" id="title" name="title" req="true" placeholder="邮件标题" ts='邮件标题格式错误'>
+<input type="text" class="input-block-level" id="content" name="content" req="true" placeholder="邮件内容" ts='邮件内容格式错误'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+    F.st();
+</script>

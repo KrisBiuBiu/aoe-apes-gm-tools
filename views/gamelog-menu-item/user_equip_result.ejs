@@ -1,0 +1,65 @@
+<%
+id = data.id;
+username = data.username;
+%>
+<form action="/gamelog/result/user_equip" method="post">
+<select id="serverid" name="serverid">
+  <option value="1">--请选择服务器--</option>
+  <% for(var i=1;i < 10;i++){ %>
+  <option value = "<%=i %>"><%=i %></option>
+  <% } %>
+</select>
+<input type="text" id="id" name="id" value="<%=id %>" req="true" placeholder="玩家ID" exp="^[1-9]\d*$" ts='玩家ID格式错误'>
+<input type="hidden" id="username" name="username" value="<%=username %>" req="true" placeholder="用户名"  ts='玩家ID格式错误'>
+<input type="hidden" id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='50'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+
+<h3>玩家身上装备</h3>
+<table border="1px">
+<tr>
+	<th>装备位置</th>
+	<th>装备id</th>
+</tr>
+<% var k=1; %>
+<% data.newpackEquip1.forEach(function(v){ %>
+	<tr>
+		<td><%=k %></td>
+		<!-- 对装备ID进行中文转义 -->
+		<% var Equip = data.translate; %>
+		<% for(var i in Equip){ %>
+		<% if(parseInt(i) == parseInt(v)){ %>
+		<td><%=v %><b><font color="blue">(<%=Equip[i] %>)</font></b></td>
+		<% } %>
+		<% } %>
+	</tr>
+<% k++; %>
+<% }) %>
+</table>
+
+<h3>玩家包裹装备</h3>
+<table border="1px">
+<tr>
+	<th>序号</th>
+	<th>装备id</th>
+</tr>
+<% var k=1; %>
+<% data.newheroEquip.forEach(function(v){ %>
+	<tr>
+		<td><%=k %></td>
+		<!-- 对装备ID进行中文转义 -->
+		<% var Equip = data.translate; %>
+		<% for(var i in Equip){ %>
+		<% if(parseInt(i) == parseInt(v.id)){ %>
+		<td><%=v.id %><b><font color="blue">(<%=Equip[i] %>)</font></b></td>
+		<% } %>
+		<% } %>
+	</tr>
+<% k++; %>
+<% }) %>
+</table>

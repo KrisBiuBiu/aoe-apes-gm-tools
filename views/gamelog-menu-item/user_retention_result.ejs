@@ -1,0 +1,220 @@
+<style type="text/css">
+	td{
+		text-overflow:ellipsis;
+		white-space:nowrap;
+		overflow:hidden;
+	}
+	table{
+		table-layout:fixed;
+	}
+</style>
+<%
+var stime = data.StartTime;
+var serverid = data.serverid;
+%>
+<form action="/gamelog/result/user_retention"  method="post">
+<select id="serverid" name="serverid">
+  <option value="<%=serverid %>">--请选择服务器--</option>
+  <% for(var i=1;i < 10;i++){ %>
+  <option value = "<%=i %>"><%=i %></option>
+  <% } %>
+</select>
+<input type="text"  id="StartTime" name="StartTime" value="<%=stime %>" req="true" placeholder=" 2006-01-02  使用的是UTC时间标准" ts='时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD '})">
+<input type="hidden" id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='10000' >
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>
+
+
+<h2>单日玩家留存率:</h2>
+<% if(data.ret==0){ %>
+
+<% if(data.result.length>0){%>
+<div class="row-fluid">
+	<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+	<% if(data.next_id){%>
+	<div class='span1'>
+		<form action="<%= data.url %>" method="post">
+		<input type="hidden" name="serverid" value='<%=data.serverid%>'>
+		<input type="hidden" name="StartTime" value='<%=data.StartTime%>'>
+		<input type="hidden" name="EndTime" value='<%=data.EndTime%>'>
+		<input type="hidden" name="pageNum" value='<%=data.pageNum%>'>
+		<input type='hidden' name='page_id' value='<%=data.next_id%>'>
+		<button class="btn" type="submit">下一页</button>
+		<% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+		</form>
+	</div>
+	<% } %>
+	<% if(data.prev_id){%>
+	<div class='span1'>
+		<form action="<%= data.url %>" method="post">
+		<input type="hidden" name="serverid" value='<%=data.serverid%>'>
+		<input type="hidden" name="StartTime" value='<%=data.StartTime%>'>
+		<input type="hidden" name="EndTime" value='<%=data.EndTime%>'>
+		<input type="hidden" name="pageNum" value='<%=data.pageNum%>'>
+		<input type='hidden' name='page_id' value='<%=data.prev_id%>'>
+		<button class="btn" type="submit">上一页</button>
+		<% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+		</form>
+	</div>
+	<% } %>
+</div>
+<% } %>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-bordered" id="targetTable" name="targetTable">
+	<thead>
+		<tr>
+			<th>日期</th>
+			<th>当日新增用户</th>
+			<th>次日登录用户</th>
+			<th>次日留存率</th>
+			<th>七日登录用户</th>
+			<th>七日留存率</th>
+			<th>30日登录用户</th>
+			<th>30日留存率</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if(data.result.length>0){%>
+		<% var date=data.StartTime; %>
+		<% date = new Date(Date.parse(date.replace(/-/g, "/"))); %>
+		<% date = date.getTime(); %>
+		<% TheSecondDate = Number(date + 86400000) %>
+		<% TheSeventhDate = Number(date + 604800000) %>
+		<% TheThirtiethDate = Number(date + 2592000000) %>
+		<tr>
+		<!--查询日期-->
+		<td><%=data.StartTime %></td>
+		<!--当日新增用户-->
+		<td><%=data.result.length%>人</td>
+
+		<% var TheSecondDateUsers=0; %>
+		<% data.result.forEach(function(v){ %>
+		<%
+		if(parseInt(v.LoginTime)>parseInt(TheSecondDate) && parseInt(v.LoginTime) < parseInt(TheSecondDate+84600000)){
+			TheSecondDateUsers++;
+		}
+		%>
+		<% }) %>
+		<td><%=TheSecondDateUsers %>人</td><!--次日登录用户-->
+		<% var TheSecondDates=parseInt(TheSecondDateUsers) * 100 /parseInt(data.result.length); %>
+		<% var TheSecondDate=TheSecondDates.toFixed(2)+'%'; %>
+		<td><%=TheSecondDate %></td><!--次日留存率-->
+
+		<% var TheSeventhDateUsers=0; %>
+		<% data.result.forEach(function(v){ %>
+		<%
+		if(parseInt(v.LoginTime)>parseInt(TheSeventhDate) && parseInt(v.LoginTime) < parseInt(TheSeventhDate+84600000)){
+			TheSeventhDateUsers++;
+		}
+		%>
+		<% }) %>
+		<td><%=TheSeventhDateUsers %>人</td><!--七日登录用户-->
+		<% var TheSeventhDates=parseInt(TheSeventhDateUsers) * 100 /parseInt(data.result.length); %>
+		<% var TheSeventhDate=TheSeventhDates.toFixed(2)+'%'; %>
+		<td><%=TheSeventhDate %></td><!--七日留存率-->
+
+		<% var TheThirtiethDateUsers=0; %>
+		<% data.result.forEach(function(v){ %>
+		<%
+		if(parseInt(v.LoginTime)>parseInt(TheThirtiethDate) &&  parseInt(v.LoginTime) < parseInt(TheThirtiethDate+84600000)){
+			TheThirtiethDateUsers++;
+		}
+		%>
+		<% }) %>
+		<td><%=TheThirtiethDateUsers %>人</td><!--30日登录用户-->
+		<% var TheThirtiethDates=parseInt(TheThirtiethDateUsers) * 100 /parseInt(data.result.length); %>
+		<% var TheThirtiethDate=TheThirtiethDates.toFixed(2)+'%'; %>
+		<td><%=TheThirtiethDate %></td><!--30日留存率-->
+		</tr>
+		<% } %>
+	</tbody>
+</table>
+<h2>当日新增玩家列表:</h2>
+<table class="table table-striped table-hover table-bordered" id="targetTable" name="targetTable">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>id</th>
+			<th>User_name</th>
+			<th>注册时间</th>
+			<th>最后登录时间</th>
+			<th>ip</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if(data.result.length>0){%>
+		<% var k = parseInt(data.pageNum)*parseInt(data.prev_id) %>
+		<% data.result.forEach(function(v){ %>
+		<tr>
+		<td><%=k+1 %></td>
+		<td><%=v.id %></td>
+		<td><%=v.username %></td>
+		<% var date4 = new Date(v.RegisterTime) %>
+		<% Y1 = date4.getFullYear() + '-'; %>
+		<% M1 = (date4.getMonth() + 1 < 10 ? '0'+(date4.getMonth()+1):date4.getMonth()+1) + '-';  %>
+		<% D1 = date4.getDate() + ' ';  %>
+		<% h1 = date4.getHours() + ':';  %>
+		<% m1 = date4.getMinutes() + ':';  %>
+		<% s1 = date4.getSeconds() + ' ';  %>
+		<td><%=Y1+M1+D1+h1+m1+s1 %></td>
+		<% var date5 = new Date(v.LoginTime) %>
+		<% Y2 = date5.getFullYear() + '-'; %>
+		<% M2 = (date5.getMonth() + 1 < 10 ? '0'+(date5.getMonth()+1):date5.getMonth()+1) + '-';  %>
+		<% D2 = date5.getDate() + ' ';  %>
+		<% h2 = date5.getHours() + ':';  %>
+		<% m2 = date5.getMinutes() + ':';  %>
+		<% s2 = date5.getSeconds() + ' ';  %>
+		<td><%=Y2+M2+D2+h2+m2+s2 %></td>
+		<td><%=v.Ip %></td>
+		</tr>
+		<% k++; %>
+		<% }) %>
+		<% } %>
+	</tbody>
+</table>
+</div>
+<% }else{ %>
+<p><%= data.result %></p>
+<% } %>
+
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '玩家单日留存列表.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '玩家单日留存列表'));
+    });
+});
+</script>

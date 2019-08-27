@@ -1,0 +1,63 @@
+<div id="container" class="container">
+<div class="hero-unit">
+    <form action='/user/reg' class="form-signin" method="post">
+        <h3 class="form-signin-heading">管理员配置(账号如果存在则替换权限)</h3>
+        <input type="text" class="input-block-level" id="username" name="username" req="true" placeholder="用户名" ts='用户名只能包含字符、数字、下划线' exp='^\w+$'>
+        <input type="password" class="input-block-level" id="password" name="password" req="true" placeholder="密码" ts='密码必须以字母开头，长度在6-18之间，只能包含字符、数字和下划线' exp='^[a-zA-Z]\w{5,17}$'>
+        <hr />
+        <h5>游戏数据权限:</h5>
+        <% if (session.gamedata_link_urls.length>0) { %>
+            <% var index=0; %>
+            <div class="row-fluid"><div class="span2"><label class="checkbox"><input type="checkbox" id='gamedata_itm' onclick="selectAll(this)"> 全选/取消</label></div></div>
+            <% session.gamedata_link_urls.forEach(function(link){ %>
+                <%if (!link.supercmd){ %>
+                    <% if ( index % 6 == 0){ %>
+                    <div class="row-fluid">
+                    <% } %>
+                    <div class="span2"><label class="checkbox"><input type="checkbox" id='gamedata_itm' name='gamedata_itm' value='<%= link.tg %>'> <%= link.ctx %></label></div>
+                    <% if ((index+1) % 6 == 0){ %>
+                    </div>
+                    <% } %>
+                    <% index++; %>
+                <% } %>
+            <% }) %>
+            <% if (index % 6 !=0 ) { %>
+            </div>
+            <% } %>
+        <% } %>
+        <hr />
+        <h5>运维统计权限:</h5>
+        <% if (session.gamelog_link_urls.length>0) { %>
+            <% var index=0; %>
+            <div class="row-fluid"><div class="span2"><label class="checkbox"><input type="checkbox" id='gamelog_itm'' onclick="selectAll(this)"> 全选/取消</label></div></div>
+            <% session.gamelog_link_urls.forEach(function(link){ %>
+                <%if (!link.supercmd){ %>
+                    <% if ( index % 6 == 0){ %>
+                    <div class="row-fluid">
+                    <% } %>
+                    <div class="span2"><label class="checkbox"><input type="checkbox" id='gamelog_itm' name='gamelog_itm' value='<%= link.tg %>'> <%= link.ctx %></label></div>
+                    <% if ((index+1) % 6 == 0){ %>
+                    </div>
+                    <% } %>
+                    <% index++; %>
+                <% } %>
+            <% }) %>
+            <% if (index % 6 !=0 ) { %>
+            </div>
+            <% } %>
+        <% } %>
+            <hr />
+        <% if (csrf) { %>
+        <input type="hidden" name="_csrf" value='<%= csrf %>'>
+        <% } %>
+        <button type="submit" class="btn btn-large btn-primary">注册</button>
+    </form>
+</div>
+</div>
+<script type="text/javascript">
+ F.st();
+function selectAll(arg){
+        var isChecked = $(arg).prop("checked");
+        $("input[id='"+arg.id+"']").prop("checked", isChecked);
+}
+</script>

@@ -1,0 +1,14 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="username" name="username" req="true" placeholder="用户名"  ts='管理员ID格式错误'>
+<input type="hidden" class="input-block-level" id="creator" value="gmname" name="creator" req="true" placeholder="用户名"  ts='超级管理员ID格式错误'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>

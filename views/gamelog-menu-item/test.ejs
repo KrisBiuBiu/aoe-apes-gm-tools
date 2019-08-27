@@ -1,0 +1,14 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="StartTime" name="StartTime" req="true" placeholder="注册开始时间" ts='注册开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text" class="input-block-level" id="EndTime" name="EndTime" req="true" placeholder="注册结束时间" ts='注册结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text" class="input-block-level" id="PostTime" name="PostTime" req="true" placeholder="推送时间" ts='推送时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<button class="btn btn-large btn-primary" type="submit">查询</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>

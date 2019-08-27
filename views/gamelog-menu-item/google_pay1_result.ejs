@@ -1,0 +1,135 @@
+
+<style type="text/css">
+	td{
+		text-overflow:ellipsis;
+		white-space:nowrap;
+		overflow:hidden;
+	}
+	table{
+		table-layout:fixed;
+	}
+</style>
+<h2>礼包购买查询列表:</h2>
+<% if(data.ret==0){ %>
+<% if(data.result.length>0){%>
+<div class="row-fluid">
+	<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+	<% if(data.next_id){%>
+	<div class='span1'>
+		<form action="<%= data.url %>" method="post">
+		<input type="hidden" name="userid" value='<%=data.userid%>'>
+		<input type="hidden" name="pageNum" value='<%=data.pageNum%>'>
+		<input type='hidden' name='page_id' value='<%=data.next_id%>'>
+		<button class="btn" type="submit">下一页</button>
+		<% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+		</form>
+	</div>
+	<% } %>
+	<% if(data.prev_id){%>
+	<div class='span1'>
+		<form action="<%= data.url %>" method="post">
+		<input type="hidden" name="userid" value='<%=data.userid%>'>
+		<input type="hidden" name="pageNum" value='<%=data.pageNum%>'>
+		<input type='hidden' name='page_id' value='<%=data.prev_id%>'>
+		<button class="btn" type="submit">上一页</button>
+		<% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+		</form>
+	</div>
+	<% } %>
+</div>
+<% } %>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-bordered" id="targetTable" name="targetTable">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>Sku</th>
+			<th>PackageId</th>
+			<th>ProductId</th>
+			<th>TimeStamp(购买时间)</th>
+		</tr>
+		<tr>
+			<th>序号</th>
+			<th>购买金额</th>
+			<th>礼包ID</th>
+			<th>商品ID</th>
+			<th>UTC时间</th>
+			<th>太平洋标准时间(PST)</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if(data.result.length>0){%>
+		<% var k=0; %>
+		<% var money = new Array() %>
+		<% data.result.forEach(function(v){ %>
+		<tr>
+		<td><%=v.orderId %></td>
+		<% var newsku  = v.sku-0.01 %>
+		<td><%=newsku %></td>
+		<!-- 对package_id进行中文转义 -->
+		<% var Package = data.translate; %>
+		<% var strnum %>
+		<% for(var i in Package){ %>
+		<% if(parseInt(i) == parseInt(v.package_id)){ %>
+		<% var strnum = i %>
+		<% } %>
+		<% } %>
+		<% if(strnum != null){ %>
+		<td><%= v.package_id %><b><font color="blue">(<%=Package[strnum] %>)</font></b></td>
+		<% }else{ %>
+		<td><%=v.package_id %></td>
+		<% } %>
+		<!-- 转义结束 -->
+		<td><%=v.productId %></td>
+		<td><%=v.timestamp %></td>
+		<% var date5 = new Date(v.purchaseTime-28800000) %>
+		<% Y2 = date5.getFullYear() + '-'; %>
+		<% M2 = (date5.getMonth() + 1 < 10 ? '0'+(date5.getMonth()+1):date5.getMonth()+1) + '-';  %>
+		<% D2 = date5.getDate() + ' ';  %>
+		<% h2 = date5.getHours() + ':';  %>
+		<% m2 = date5.getMinutes() + ':';  %>
+		<% s2 = date5.getSeconds() + ' ';  %>
+		<td><%=Y2+M2+D2+h2+m2+s2 %></td>
+		</tr>
+		<% k++; %>
+		<% money.push(newsku ) %>
+		<% }) %>
+		<tr>
+			<th>总计</th>
+			<%
+			var totalMoney = 0;
+			money.forEach(function(b){
+				totalMoney += b;
+			})
+			%>
+			<th>总金额:<%=totalMoney %></th>
+			<th>总数量:<%=k %></th>
+			<th>EMPTY</th>
+			<th>EMPTY</th>
+			<th>EMPTY</th>
+		</tr>
+		<% } %>
+	</tbody>
+</table>
+</div>
+<% }else{ %>
+<p><%=data.result %></p>
+<% } %>
+
+<script language="javascript">
+
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '礼包购买查询列表.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '礼包购买查询列表'));
+    });
+});
+</script>

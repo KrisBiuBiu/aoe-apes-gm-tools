@@ -1,0 +1,31 @@
+<h3 class="form-signin-heading">1.<%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="userid" name="userid" req="true" placeholder="玩家ID" exp="^[1-9]\d*$" ts='玩家ID格式错误'>
+<input type="text" class="input-block-level" id="StartTime" name="StartTime" req="true" placeholder="开始时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text" class="input-block-level" id="EndTime" name="EndTime" req="true" placeholder="结束时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text" class="input-block-level" id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">查询</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+<hr>
+<h3 class="form-signin-heading">2.玩家操作次数统计</h3>
+<form action="/gamelog/result/count_behavior" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="userid" name="userid" req="true" placeholder="玩家ID" exp="^[1-9]\d*$" ts='玩家ID格式错误'>
+<input type="text" class="input-block-level" id="str" name="str" req="true" placeholder="输入查询的str"  ts='str数据错误'>
+<input type="text" class="input-block-level" id="StartTime" name="StartTime" req="true" placeholder="开始时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text" class="input-block-level" id="EndTime" name="EndTime" req="true" placeholder="结束时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>
+<hr>
+<p>注意:1.查询玩家行为必须输入某一个玩家的userid<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.玩家次数统计可选择输入userid,如不输入,则查询全部<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.查看条数:如果不输入,则显示十条;如果输入大于5000,则显示5000条</p>

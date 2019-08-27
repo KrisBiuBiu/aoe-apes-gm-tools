@@ -1,0 +1,57 @@
+
+<a class="btn" id="exportExcel" href="javascript:;">导出Excel</a>
+<p>总:<%=data.result.length %></p>
+<p>巴西:<%=data.BRArray.length %></p>
+<p>加拿大:<%=data.CAArray.length %></p>
+<p>中国:<%=data.CNArray.length %></p>
+<p>印度:<%=data.INArray.length %></p>
+<p>俄罗斯<%=data.RUArray.length %></p>
+<p>泰国:<%=data.THArray.length %></p>
+<p>乌克兰:<%=data.UAArray.length %></p>
+<p>美国:<%=data.USArray.length %></p>
+<p>其他:<%=data.otherArray.length %></p>
+<table border="1px" id="targetTable" name="targetTable">
+	<tr>
+		<th>序号</th>
+		<th>ip</th>
+		<th>地区</th>
+	</tr>
+<% var k=1 %>
+<% for(var i=0;i < data.result.length;i++){ %>
+<tr>
+	<td><%=k %></td>
+	<td><%=data.result[i].ip %></td>
+	<td><%=data.result[i].Ipc %></td>
+</tr>
+<% k++ %>
+<% } %>
+</table>
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '推送情况.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '推送情况'));
+    });
+});
+</script>

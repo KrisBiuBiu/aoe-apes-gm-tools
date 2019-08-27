@@ -1,0 +1,299 @@
+<script language="javascript">
+//给数量结果添加千位符
+function test(str){ 
+  var re = /(?=(?!\b)(\d{3})+$)/g; 
+  return str.replace(re, ','); 
+} 
+</script>
+<h1>玩家充值统计排行榜</h1>
+
+<div class="row-fluid">
+<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+</div>
+<div class="table-responsive">
+<table border="1px" id="targetTable" name="targetTable">
+<thead>
+	<tr>
+		<th>排名</th>
+		<th width="10px">累计充值金额</th>
+		<th>账号ID</th>
+		<th>角色名</th>
+		<th>角色战力</th>
+		<th>角色部队战力</th>
+		<th>角色科研战力</th>
+		<th width="20">公会ID</th>
+		<th>公会全称</th>
+		<th><font color="blue">坐标X</font></th>
+		<th><font color="blue">坐标Y</font></th>
+		<th>注册时间</th>
+		<th>最后登录时间</th>
+		<th>离线天数</th>
+		<th>登录IP</th>
+		<th>国家</th>
+		<th>加速</th>
+		<th>金币</th>
+		<th>木材</th>
+		<th>石料</th>
+		<th>铁矿</th>
+		<th>香蕉</th>
+		<th>银币</th>
+	</tr>
+</thead>
+	<!-- 处理每个玩家的充值金额总和 -->
+	<% var k = 1; %>
+	<% data.useridarray.forEach(function(v){ %>
+	<% var sku = 0 %>
+	<%
+	 data.result.forEach(function(a){
+		if(v.user_id == a.user_id && v.orderId && data.test == "no"){
+			sku += parseInt(a.sku);
+		}else if(v.user_id == a.user_id && data.test == "yes"){
+			sku += parseInt(a.sku);
+		}
+	}) 
+	%>
+	<!-- 将gs1库中取出的相关信息进行处理 -->
+	<%
+	var userName
+	var userPower
+	var userAllianceid
+	var userposX
+	var userposY
+	var userRegisterTime
+	var userLoginTime
+	var userip
+	var useripc
+	var userDiamond
+	var userwood
+	var userstone
+	var usersteel
+	var userbanana
+	var userCash
+	var userItems
+	var userStatInfo
+	<!-- 给大字数加千位符 -->
+	var re = /(?=(?!\b)(\d{3})+$)/g;
+	data.itemsarray.forEach(function(b){
+		if(v.user_id == b.id){
+		userName = b.username
+		userPower = b.Power+""
+		userAllianceid = b.Alliance
+		userRegisterTime = b.RegisterTime
+		userLoginTime = b.LoginTime
+		userip = b.Ip
+		useripc = b.Ipc
+		userposX = b.Pos['X']
+		userposY = b.Pos['Y']
+		userDiamond = parseInt(b.Diamond)+""
+		userwood = parseInt(b.Energy)+""
+		userstone = parseInt(b.Oil)+""
+		usersteel = parseInt(b.Steel)+""
+		userbanana = parseInt(b.Food)+""
+		userCash = parseInt(b.Cash)+""
+		userItems = b.Items
+		userStatInfo = b.StatInfo
+		}
+	})
+	%>
+	<% if(parseInt(sku) > 0){ %>
+	<tr>
+	<th><%=k %></th>
+	</tr>
+	<tr>
+	<td></td>
+	<td width="10px"><%=sku %></td>
+	<td><%=v.user_id %></td>
+	<td><%=userName %></td>
+	<td><%=userPower.replace(re, ','); %></td>
+	<% var userarmypower = userStatInfo['1001']['Val']+"" %>
+	<td><%=userarmypower.replace(re, ','); %></td>
+	<% var usercollegepower = userStatInfo['1004']['Val']+"" %>
+	<td><%=usercollegepower.replace(re, ','); %></td>
+	<td><%=userAllianceid %></td>
+	<%
+		var userAlliancename
+		data.alliancearray.forEach(function(q){
+			if(userAllianceid == q.alliance_id){
+				userAlliancename = q.alliance_name
+			}
+		})
+	%>
+	<td><%=userAlliancename %></td>
+	<td><font color="blue"><%=userposX %></font></td>
+	<td><font color="blue"><%=userposY %></font></td>
+	<!-- 将注册时间戳转化为时间 -->
+	<% var date4 = new Date(userRegisterTime) %>
+	<% Y1 = date4.getFullYear() + '-'; %>
+	<% M1 = (date4.getMonth() + 1 < 10 ? '0'+(date4.getMonth()+1):date4.getMonth()+1) + '-';  %>
+	<% D1 = date4.getDate() + '   ';  %>
+	<% h1 = date4.getHours() + ':';  %>
+	<% m1 = date4.getMinutes() + ':';  %>
+	<% s1 = date4.getSeconds() + ' ';  %>
+	<td width="140"><%=Y1+M1+D1+h1+m1+s1 %></td>
+	<!-- 将登录时间戳转化为时间 -->
+	<% var date5 = new Date(userLoginTime) %>
+	<% Y2 = date5.getFullYear() + '-'; %>
+	<% M2 = (date5.getMonth() + 1 < 10 ? '0'+(date5.getMonth()+1):date5.getMonth()+1) + '-';  %>
+	<% D2 = date5.getDate() + '   ';  %>
+	<% h2 = date5.getHours() + ':';  %>
+	<% m2 = date5.getMinutes() + ':';  %>
+	<% s2 = date5.getSeconds() + ' ';  %>
+	<td width="140"><%=Y2+M2+D2+h2+m2+s2 %></td>
+	<!-- 计算离线天数 -->
+	<% 
+		var outline = parseInt(parseInt(data.nowtime) - parseInt(userLoginTime))/86400000
+	 %>
+	 <td><%=outline.toFixed(1) %>天</td>
+	<td><%=userip %></td>
+	<%
+	var countryname;
+	for(var i in data.country){
+		if(i == useripc){
+			countryname = data.country[i];
+		}
+	}
+	%>
+	<td><%=countryname %></td>
+	<!-- 取出玩家背包内的加速道具 -->
+	<%
+	var totalspeed = 0
+	for(var i in data.speed){
+	if(userItems[i] != null){
+	}
+		if(userItems[i] != null && i == userItems[i]['Id']){
+			var count = userItems[i]['Cnt']
+			var speedtime = parseInt(data.speed[i]);
+			totalspeed += count*speedtime
+		}
+	}
+	totalspeed = totalspeed+""
+	%>
+	<!-- 将加速由秒数转化为天时分 -->
+	<% var jcday = parseInt(totalspeed/86400) %>
+	<% var jcday1 = parseInt(totalspeed%86400) %>
+	<% var jchour = parseInt(jcday1/3600) %>
+	<% var jchour1 = parseInt(jcday1%3600) %>
+	<% var jcmin = parseInt(jchour1/60) %>
+	<% var jcmin1 = parseInt(jchour1%60) %>
+	<td><%=jcday %>天<%=jchour %>时<%=jcmin %>分</td>
+	<td><%=userDiamond.replace(re, ','); %></td>
+	<!-- 取出玩家背包内的木材道具 -->
+	<%
+	var totalwood = 0
+	for(var i in data.wood){
+	if(userItems[i] != null){
+	}
+		if(userItems[i] != null && i == userItems[i]['Id']){
+			var count = userItems[i]['Cnt']
+			var woodtime = parseInt(data.wood[i]);
+			totalwood += count*woodtime
+		}
+	}
+	packwood = totalwood+""
+	var totalwood = parseInt(packwood) + parseInt(userwood) + "";
+	%>
+	<td>当前:<%=userwood.replace(re, ','); %><br>包裹:<%=packwood.replace(re, ','); %><br>总和:<%=totalwood.replace(re, ','); %></td>
+	<!-- 取出玩家背包内的石头道具 -->
+	<%
+	var totalstone = 0
+	for(var i in data.stone){
+	if(userItems[i] != null){
+	}
+		if(userItems[i] != null && i == userItems[i]['Id']){
+			var count = userItems[i]['Cnt']
+			var stonetime = parseInt(data.stone[i]);
+			totalstone += count*stonetime
+		}
+	}
+	packstone = totalstone+""
+	var totalstone = parseInt(packstone) + parseInt(userstone) + "";
+	%>
+	<td>当前:<%=userstone.replace(re, ','); %><br>包裹:<%=packstone.replace(re, ','); %><br>总和:<%=totalstone.replace(re, ','); %></td>
+	<!-- 取出玩家背包内的钢铁道具 -->
+	<%
+	var totalsteel = 0
+	for(var i in data.steel){
+	if(userItems[i] != null){
+	}
+		if(userItems[i] != null && i == userItems[i]['Id']){
+			var count = userItems[i]['Cnt']
+			var steeltime = parseInt(data.steel[i]);
+			totalsteel += count*steeltime
+		}
+	}
+	packsteel = totalsteel+""
+	var totalsteel = parseInt(packsteel) + parseInt(usersteel) + "";
+	%>
+	<td>当前:<%=usersteel.replace(re, ','); %><br>包裹:<%=packsteel.replace(re, ','); %><br>总和:<%=totalsteel.replace(re, ','); %></td>
+	<!-- 取出玩家背包内的香蕉道具 -->
+	<%
+	var totalfood = 0
+	for(var i in data.food){
+	if(userItems[i] != null){
+	}
+		if(userItems[i] != null && i == userItems[i]['Id']){
+			var count = userItems[i]['Cnt']
+			var foodtime = parseInt(data.food[i]);
+			totalfood += count*foodtime
+		}
+	}
+	packfood = totalfood+""
+	var totalfood = parseInt(userbanana) + parseInt(packfood) + "";
+	%>
+	<td>当前:<%=userbanana.replace(re, ','); %><br>包裹:<%=packfood.replace(re, ','); %><br>总和:<%=totalfood.replace(re, ','); %></td>
+	<!-- 取出玩家背包内的银币道具 -->
+	<%
+	var totalcash = 0
+	for(var i in data.cash){
+	if(userItems[i] != null){
+	}
+		if(userItems[i] != null && i == userItems[i]['Id']){
+			var count = userItems[i]['Cnt']
+			var cashtime = parseInt(data.cash[i]);
+			totalcash += count*cashtime
+		}
+	}
+	packcash = totalcash+""
+	var totalcash = parseInt(userCash) + parseInt(packcash) + "";
+	%>
+	<td>当前:<%=userCash.replace(re, ','); %><br>包裹:<%=packcash.replace(re, ','); %><br>总和:<%=totalcash.replace(re, ','); %></td>
+	<% k++ %>
+	<% } %>
+	</tr>
+	<% }) %>
+</table>
+</div>
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '玩家充值统计列表.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '玩家充值统计列表'));
+    });
+});
+//给数量结果添加千位符
+function test(str){ 
+  var re = /(?=(?!\b)(\d{3})+$)/g; 
+  return str.replace(re, ','); 
+} 
+</script>

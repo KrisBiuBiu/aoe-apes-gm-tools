@@ -1,0 +1,23 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="region" name="region" value="1" req="true" placeholder="大区ID" exp="^[1-9]\d*$" ts='大区ID格式错误'>
+<div><textarea rows="3" id="jsonstr" name="jsonstr" req="true" placeholder="[]int64 的json对象"></textarea></div>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+    F.st();
+</script>
+
+<pre>
+模板对象:
+type RewardFactor struct {
+	Duration  float64 `json:"huodong_duration"` // 活动时长 minutes
+	Ablility  float64 `json:"ablility"`         // 活动能力值
+	KindId    int16   `json:"kind_id"`          // kind表id
+	MemberCnt int32   `json:"member_cnt"`       // 成员数
+}
+</pre>

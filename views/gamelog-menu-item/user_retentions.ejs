@@ -1,0 +1,21 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<select id="serverid" name="serverid">
+  <option value="1">--请选择服务器--</option>
+  <% for(var i=1;i < 10;i++){ %>
+  <option value = "<%=i %>"><%=i %></option>
+  <% } %>
+</select>
+<input type="text" class="input-block-level" id="StartTime" name="StartTime" req="true" placeholder="查询开始时间 2006-01-02  使用的是UTC时间标准" ts='查询开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD '})">
+<input type="text" class="input-block-level" id="EndTime" name="EndTime" req="true" placeholder="查询结束时间 2006-01-02  使用的是UTC时间标准" ts='查询结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD '})">
+<input type="hidden" class="input-block-level" id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='10000'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">查询</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>

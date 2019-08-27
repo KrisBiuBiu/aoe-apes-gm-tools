@@ -1,0 +1,138 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<pre>
+服务器ID=0 gate GM指令消息
+服务器ID=9999 center GM指令消息
+服务器ID=9998 all gs GM指令消息
+服务器ID=x  指定gs GM指令消息
+</pre>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="region" name="region" value="1" req="true" placeholder="大区ID" exp="^[1-9]\d*$" ts='大区ID格式错误'>
+<input type="text" class="input-block-level" id="serverid" name="serverid" req="true" placeholder="服务器ID" exp="^[1-9]\d*$|^0$" ts='服务器ID格式错误'>
+<input type="text" class="input-block-level" id="userid" name="userid" req="true" placeholder="玩家ID" exp="^[1-9]\d*$|^0$" ts='玩家ID格式错误'>
+<input type="text" class="input-block-level" id="cmd" name="cmd" req="true" placeholder="CMD" ts='命令格式错误'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+    F.st();
+</script>
+
+
+<pre>
+gate:
+//获取不同服务器在线的玩家数量
+ShowServerOnlines()
+// 英雄预设
+HeroPresetStatusChange(userId int64, id int8, open bool)
+//行军预设
+UserPresetStatusChange(userId int64, id int8, open bool)
+
+gs:
+	// 资源类型 rtype
+	RES_FOOD    = 1   // 食物
+	RES_ENERGY  = 2   // 能源
+	RES_OIL     = 3   // 石油
+	RES_STEEL   = 4   // 钢铁
+	RES_CASH    = 5   // 钞票
+	RES_DIAMOND = 6   // 钻石
+	RES_DOMINO  = 7   // 骨牌
+	RES_ITEM    = 8   // 道具
+	RES_CREDIT  = 9   // 军演币
+	RES_RANDOM  = 100 // 随机资源
+//清理地图上无主资源
+CleanItemRes(gsid int16,rtype int8)
+//地图资源刷新初始化指令
+InitRefreshInfo()
+//清除地图上所有叛军
+CleanRebel()
+//获取有效礼包简要信息
+ValidIapPkg()
+//直接给指定玩家发送充值礼包
+IapUsePkg(userId int64, toUser int64, pkgId int32)
+//修改怪物总数
+RebelMaxCount(max int)
+//获取怪物总数
+RebelCount()
+// 重置玩家的buff
+ResetUserBuff(userId int64)
+//修改玩家充值点数
+IapPoint(userId int64, points int64)
+//获取玩家的统计信息
+ShowUserPower(userId int64)
+//删除玩家所有政府头衔
+RemoveUserTitle(userId int64)
+//更新支付配置
+ReloadIAP(gsId int16)
+//获取玩家的部队信息
+UserFieldInfo(userId int64)
+//添加装备
+RecruitOfficer(userId int64, id int32)
+//检查玩家所有定时器信息
+CheckUserTimerInfo(userId int64)
+//获取玩家的资源数据
+UserResInfo(userId int64)
+//添加英雄经验
+AddExp(exp int64, usebuff bool)
+//查看玩家部队信息
+ShowUserArmy(userId int64)
+//移除城市中兵力
+FixArmy(userId int64, armyType int16, armyCnt int64)
+//删除玩家包裹道具
+DisItem(userId int64, id int16, cnt int32)
+//添加玩家道具
+AddItem(userId int64, id int16, cnt int32)
+//添加公会资源
+AddAllianceRes(asId int32, resType int8, resAmount int64)
+//若玩家已开启防护盾，则取消防护盾
+DropShield(userId int64)
+//加速玩家每日任务 id 任务id
+QuestSpeedup(id int32)
+//升级科技
+UpResearch(ftype int16)
+//修改玩家部队数据
+ModifyTroop(id int64, opval int16, atype int16, cnt int64)
+//玩家部队信息详细
+UserDetail(userId int64)
+//减少玩家砖石
+DisDiamond(userId int64, n int64)
+//增加玩家砖石
+Diamond(userId int64, n int64)
+//加100000资源
+Needres()
+//添加资源
+AddRes(userId int64, resType int8, cnt int64)
+//扣除资源
+DisRes(userId int64, resType int8, cnt int64)
+//服务器关机消息
+ShutDownNotify(message string)
+//服务器关机消息
+GroupBroadShutDownNotify(key string)
+//默认gsid
+//是否开启内购状态
+DefaultGs(id int16)
+//设置内购状态
+IapInterBuy(uid int64, enable bool)
+//内购人民币添加
+IapInterRmb(uid int64, rmb int32)
+//踢人
+Kick(userId int64)
+//添加防护盾 ms
+AddSystemShield(userId int64, expire int64)
+//清除系统防护盾
+ResetSystemShield(userId int64)
+
+center:
+//修改公会为内部公会，优先推荐
+AsInternal(allianceId int32,internal bool)
+// 增加联盟资源
+AddAllianceRes(allianceId int32, resType int8, resCnt int64)
+//设置联盟科研等级
+SetResearchLevel(allianceId int32, source int32, level int16)
+//公会科研满级
+FinishAllAllianceResearch(allianceId int32)
+//科研直接完成
+UpgredeFinish(allianceId int32, source int32)
+</pre>

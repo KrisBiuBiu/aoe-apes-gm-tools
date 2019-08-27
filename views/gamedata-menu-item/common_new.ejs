@@ -1,0 +1,26 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<div><textarea rows="3" id="jsonstr" name="jsonstr" req="true" placeholder="json格式的数据"></textarea></div>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+    F.st();
+</script>
+<pre>
+模板对象:
+type LangText struct {
+	Id   int32  `json:"id" bson:"id"`
+	Desc string `json:"desc" bson:"desc"`
+	Type int8   `json:"type" bson:"type"`
+	Text []Text `json:"text" bson:"text"`
+}
+
+type Text struct {
+	Lang    int8   `json:"lang" bson:"lang"`
+	Content string `json:"content" bson:"content"`
+}
+  </pre>

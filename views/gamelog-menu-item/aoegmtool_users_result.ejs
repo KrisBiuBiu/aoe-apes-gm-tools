@@ -1,0 +1,60 @@
+<h2>管理员账号及权限管理:</h2>
+<table class="table table-striped table-hover table-bordered" id="targetTable" name="targetTable">
+	<tr>
+		<th>管理员账号</th>
+		<th>游戏数据权限</th>
+		<th>运维统计权限</th>
+		<th>删除管理员账号</th>
+	</tr>
+
+<% data.result.forEach(function(v){ %>
+
+	<tr>
+	<td><%=v.name %></td>
+	<td>
+		<form>
+			<select>
+				<% var gamedata  = v.gamedata_itm %>
+				<% gamedata.forEach(function(a){ %>
+				<option><%=a %></option>
+				<% }) %>
+			</select>
+		</form>
+	</td>
+	<td>
+		<form>
+			<select>
+				<% var gamelog  = v.gamelog_itm %>
+				<% gamelog.forEach(function(b){ %>
+				<option><%=b %></option>
+				<% }) %>
+			</select>
+		</form>
+	</td>
+	<td>
+	<div>
+	<form action="/gamelog/result/delete_gmuser" method="post">
+	<input type="hidden" class="input-block-level" id="username" value="<%=v.name %>" name="username" req="true" placeholder="用户名"  ts='管理员ID格式错误'>
+	<input type="hidden" class="input-block-level" id="creator" value="gmname" name="creator" req="true" placeholder="用户名"  ts='超级管理员ID格式错误'>
+	<button class="btn btn-danger" type="submit" onclick="javascript:return del();">删除</button>
+		 <% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+	</form>
+	</div>
+	</td>
+	</tr>
+<% }) %>
+</table>
+
+<script language="javascript">
+	function del() {
+		var msg = "卧槽!真删？\n\n请确认！";
+		if (confirm(msg)==true){
+			return true;
+		}else{
+			return false;
+		}
+			
+	}
+</script>

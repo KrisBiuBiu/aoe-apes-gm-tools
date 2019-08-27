@@ -1,0 +1,126 @@
+<style type="text/css">
+	td{
+		text-overflow:ellipsis;
+		white-space:nowrap;
+		overflow:hidden;
+	}
+	table{
+		table-layout:fixed;
+	}
+</style>
+<h2>公会查询列表:</h2>
+<% if(data.ret==0){ %>
+
+<% if(data.alliancesinfo.length>0){%>
+<div class="row-fluid">
+	<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+	<% if(data.next_id){%>
+	<div class='span1'>
+		<form action="<%= data.url %>" method="post">
+		<input type="hidden" name="project_id" value="aoe">
+		<input type="hidden" name="pageNum" value='<%=data.pageNum%>'>
+		<input type='hidden' name='page_id' value='<%=data.next_id%>'>
+		<button class="btn" type="submit">下一页</button>
+		<% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+		</form>
+	</div>
+	<% } %>
+	<% if(data.prev_id){%>
+	<div class='span1'>
+		<form action="<%= data.url %>" method="post">
+		<input type="hidden" name="project_id" value="aoe">
+		<input type="hidden" name="pageNum" value='<%=data.pageNum%>'>
+		<input type='hidden' name='page_id' value='<%=data.prev_id%>'>
+		<button class="btn" type="submit">上一页</button>
+		<% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+		</form>
+	</div>
+	<% } %>
+</div>
+<% } %>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-bordered" id="targetTable" name="targetTable">
+	<thead>
+		<tr>
+			<th>序号</th>
+			<th>公会ID</th>
+			<th>公会名称</th>
+			<th>创建日期</th>
+			<th>公会领导者(id+name)</th>
+			<th>公会成员数量</th>
+		</tr>
+		<tr>
+			<th>#</th>
+			<th>AllianceID</th>
+			<th>AllianceNAME</th>
+			<th>CreateDATE</th>
+			<th>AllianceLEADER</th>
+			<th>MemberCount</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if(data.alliancesinfo.length>0){%>
+		<% var k = parseInt(data.pageNum)*parseInt(data.prev_id) %>
+		<% data.alliancesinfo.forEach(function(v){ %>
+		<tr>
+		<td><%=k+1 %></td>
+		<td><%=v.alliance_id %></td>
+		<td><%=v.alliance_name %></td>
+		<td><%=v.created_date %></td>
+		<% var allianceleaderid = v.alliance_leader %>
+		<% var leadername %>
+		<% 
+		data.leadersname.forEach(function(v){
+			if(allianceleaderid == v.id){
+				leadername = v.username;
+			}
+		})
+		%>
+		<% if(leadername){ %>
+		<td><%=allianceleaderid %><font color="blue">(<%=leadername %>)</font></td>
+		<% } %>
+		<td><%=v.member_count %></td>
+		</tr>
+		<% k++; %>
+		<% }) %>
+		<% } %>
+	</tbody>
+</table>
+</div>
+<% }else{ %>
+<p><%= data.alliancesinfo %></p>
+<% } %>
+
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '公会查询列表.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '公会查询列表'));
+    });
+});
+</script>

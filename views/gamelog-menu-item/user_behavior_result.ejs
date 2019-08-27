@@ -1,0 +1,154 @@
+<style type="text/css">
+	td{
+		text-overflow:ellipsis;
+		white-space:nowrap;
+		overflow:hidden;
+	}
+	table{
+		table-layout:fixed;
+	}
+</style>
+<script language="JavaScript">
+//设置页面自动刷新
+function gundong()
+{
+var cb1=document.getElementById("cb1")
+if(cb1.checked){
+t = setTimeout("self.location.reload();",30000);
+}else{
+clearTimeout(t);
+}
+}
+</script>
+<body onload="gundong()">
+<h2>玩家行为查询结果(自动刷新  <input type="checkbox" id="cb1" name="c1" value="on" onclick="gundong()" title="自动滚动" checked>  ):</h2>
+<% if(data.ret==0){ %>
+
+<% if(data.result.length>0){%>
+<div class="row-fluid">
+	<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+	<% if(data.next_id){%>
+	<div class='span1'>
+		<form action="<%= data.url %>" method="post">
+		<input type="hidden" name="userid" value='<%=data.userid%>'>
+		<input type="hidden" name="StartTime" value='<%=data.StartTime%>'>
+		<input type="hidden" name="EndTime" value='<%=data.EndTime%>'>
+		<input type="hidden" name="pageNum" value='<%=data.pageNum%>'>
+		<input type='hidden' name='page_id' value='<%=data.next_id%>'>
+		<button class="btn" type="submit">下一页</button>
+		<% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+		</form>
+	</div>
+	<% } %>
+	<% if(data.prev_id){%>
+	<div class='span1'>
+		<form action="<%= data.url %>" method="post">
+		<input type="hidden" name="userid" value='<%=data.userid%>'>
+		<input type="hidden" name="StartTime" value='<%=data.StartTime%>'>
+		<input type="hidden" name="EndTime" value='<%=data.EndTime%>'>
+		<input type="hidden" name="pageNum" value='<%=data.pageNum%>'>
+		<input type='hidden' name='page_id' value='<%=data.prev_id%>'>
+		<button class="btn" type="submit">上一页</button>
+		<% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+		</form>
+	</div>
+	<% } %>
+</div>
+<% } %>
+<p><b>注意:</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.在线时间每五分钟记录一次</p>
+<div class="table-responsive">
+<table  id="targetTable" name="targetTable">
+	<thead>
+	<tr>
+			<th>时间(ClientTime)</th>
+			<th>Col</th>
+			<th>Str</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if(data.result.length>0){%>
+		<% var k = parseInt(data.pageNum)*parseInt(data.prev_id) %>
+		<% data.result.forEach(function(v){ %>
+		<tr>
+		<% var date5 = new Date(parseInt(v.client_stamp)) %>
+		<% Y2 = date5.getFullYear() + '-'; %>
+		<% M2 = (date5.getMonth() + 1 < 10 ? '0'+(date5.getMonth()+1):date5.getMonth()+1) + '-';  %>
+		<% D2 = date5.getDate() + ' ';  %>
+		<% h2 = date5.getHours() + ':';  %>
+		<% m2 = date5.getMinutes() + ':';  %>
+		<% s2 = date5.getSeconds() + ' ';  %>
+		<td><font color="#CC0000">[时间:<%=Y2+M2+D2+h2+m2+s2 %>]</font></td>
+		<!-- 对col进行中文转义 -->
+		<% var cols = data.behaviors1; %>
+		<% var cola; %>
+		<% for(var i in cols){ %>
+		<% if(i == v.col){ %>
+		<% cola = cols[i]; %>
+		<% break; %>
+		<% } %>
+		<% } %>
+		<% if(cola){ %>
+		<td><b><font color="black">(<%=cols[i] %>)</font></b></td>
+		<% }else{ %>
+		<td><%=v.col %></td>
+		<% } %>
+		<!-- 转义结束 -->
+		<!-- 对str进行中文转义 -->
+		<% var strs = data.behaviors; %>
+		<% var stra; %>
+		<% for(var i in strs){ %>
+		<% if(i == v.str){ %>
+		<% stra = strs[i]; %>
+		<% break; %>
+		<% } %>
+		<% } %>
+		<% if(stra){ %>
+		<td><b><font color="blue">(<%=strs[i] %>)</font></b></td>
+		<% }else{ %>
+		<td><%=v.str %></td>
+		<% } %>
+		<!-- 转义结束 -->
+		</tr>
+		<% k++; %>
+		<% }) %>
+		<% } %>
+	</tbody>
+</table>
+</div>
+<% }else{ %>
+<p><%= data.result %></p>
+<% } %>
+</body>
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '玩家行为查询结果.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '玩家行为查询结果'));
+    });
+});
+</script>

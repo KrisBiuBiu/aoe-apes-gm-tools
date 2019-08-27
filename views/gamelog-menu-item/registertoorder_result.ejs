@@ -1,0 +1,182 @@
+<style type="text/css">
+	td{
+		text-overflow:ellipsis;
+		white-space:nowrap;
+		overflow:hidden;
+	}
+	table{
+		table-layout:fixed;
+	}
+</style>
+<%
+var stime = data.StartTime;
+var etime = data.EndTime;
+var timeid = data.timeid;
+var timevalue;
+if(timeid == "UTC"){
+	timevalue = "UTC时间";
+}else if(timeid == "PST"){
+	timevalue = "PST时间";
+}else if(timeid == "BJ"){
+	timevalue = "北京时间";
+}
+%>
+<form action="/gamelog/result/registertoorder"  method="post">
+
+<select id = "time" name="time"> 
+<option value="<%=timeid %>"><%=timevalue %></option>
+<option value="UTC">UTC时间</option> 
+<option value="PST">PST时间</option> 
+<option value="BJ">北京时间</option> 
+</select>
+<select id="region" name="region">
+  <option value="1">--请选择大区--</option>
+  <% for(var i=1;i < 10;i++){ %>
+  <option value = "<%=i %>"><%=i %></option>
+  <% } %>
+</select>
+<select id="serverid" name="serverid">
+  <option value="1">--请选择服务器--</option>
+  <% for(var i=1;i < 10;i++){ %>
+  <option value = "<%=i %>"><%=i %></option>
+  <% } %>
+</select>
+<input type="text"  id="StartTime" name="StartTime" req="true" value="<%=stime %>" placeholder="注册开始时间 2006-01-02  使用的是UTC时间标准" ts='注册开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD'})">
+<input type="text"  id="EndTime" name="EndTime" req="true" value="<%=etime %>" placeholder="注册结束时间 2006-01-02  使用的是UTC时间标准" ts='注册结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD'})">
+<input type="hidden"  id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='10000'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>
+<h2>结果:</h2>
+<% if(data.ret==0){ %>
+<table border="1px"  id="targetTable" name="targetTable">
+	<thead>
+		<% var date1=data.StartTime; %>
+		<% date1 = new Date(Date.parse(date1.replace(/-/g, "/"))); %>
+		<% date1 = date1.getTime(); %>
+		<% var date2=data.EndTime; %>
+		<% date2 = new Date(Date.parse(date2.replace(/-/g, "/"))); %>
+		<% date2 = date2.getTime(); %>
+		<% var count = parseInt(parseInt(data.date3)-parseInt(date1))/86400000; %>
+		<% count = parseInt(count); %>
+		<tr>
+			<th>注册\订单</th>
+			<th>合计</th>
+			<th>三日合计</th>
+			<th>七日合计</th>
+			<% var k=0 %>
+			<% for(var i = 0;i < count;i++){ %>
+			<% var date3 = new Date(date1+86400000*k) %>
+			<% Y = date3.getFullYear() + '-'; %>
+			<% M = (date3.getMonth() + 1 < 10 ? '0'+(date3.getMonth()+1):date3.getMonth()+1) + '-';  %>
+			<% D = date3.getDate() + ' ';  %>
+			<th width = "20px">+<%=k+1  %></th>
+			<% k++ %>
+			<% } %>
+		</tr>
+		
+	</thead>
+	<tbody>
+		<% for(var a=0;a < data.neweveryorders.length;a++){ %>
+		<tr>
+		<% var date3 = new Date(date1+86400000*a) %>
+		<% Y = date3.getFullYear() + '-'; %>
+		<% M = (date3.getMonth() + 1 < 10 ? '0'+(date3.getMonth()+1):date3.getMonth()+1) + '-';  %>
+		<% D = date3.getDate() + ' ';  %>
+		<!-- 日期 -->
+		<td><%=Y+M+D  %></td>
+		<!-- 全部合计 -->
+		<% var allsku = 0; %>
+		<% data.neweveryorders[a].forEach(function(v){ %>
+		<% var sumsku = 0; %>
+		<% v.forEach(function(a){ %>
+		<% sumsku += parseInt(a.sku) %>
+		<% }) %>
+		<% allsku += parseInt(sumsku) %>
+		<% }) %>
+		<td><%=allsku %></td>
+		<!-- 三日合计 -->
+		<% var allsku3 = 0; %>
+		<% k = 0; %>
+		<% data.neweveryorders[a].forEach(function(v){ %>
+		<% var sumsku = 0; %>
+		<% if(k < 3){ %>
+		<% for(var c in v){ %>
+		<% sumsku += parseInt(v[c].sku) %>
+		<% } %>
+		<% } %>
+		<% allsku3 += parseInt(sumsku) %>
+		<% k++ %>
+		<% }) %>
+		<td><%=allsku3 %></td>
+		<!-- 七日合计 -->
+		<% var allsku7 = 0; %>
+		<% k = 0; %>
+		<% data.neweveryorders[a].forEach(function(v){ %>
+		<% var sumsku = 0; %>
+		<% if(k < 7){ %>
+		<% for(var c in v){ %>
+		<% sumsku += parseInt(v[c].sku) %>
+		<% } %>
+		<% } %>
+		<% allsku7 += parseInt(sumsku) %>
+		<% k++ %>
+		<% }) %>
+		<td><%=allsku7 %></td>
+		<!-- 每日合计 -->
+		<% var allsku = 0; %>
+		<% data.neweveryorders[a].forEach(function(v){ %>
+		<% var sumsku = 0; %>
+		<% v.forEach(function(a){ %>
+		<% sumsku += parseInt(a.sku) %>
+		<% }) %>
+		<% allsku += parseInt(sumsku) %>
+		<% if(sumsku == 0 || sumsku == null){ %>
+		<% sumsku = " " %>
+		<% } %>
+		<td><%=sumsku %></td>
+		<% }) %>
+		</tr>
+		<% } %>
+	</tbody>
+</table>
+<% }else{ %>
+<p><%= data.result %></p>
+<% } %>
+
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '新增用户数据.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '新增用户数据'));
+    });
+});
+</script>

@@ -1,0 +1,21 @@
+
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="alliance_name" name="alliance_name" req="true" placeholder="请输入公会全名">
+<input type="hidden" class="input-block-level" id="project_id" name="project_id" value="aoe" req="true" placeholder="请输入公会全名"  ts='服务器ID格式错误'>
+<input type="hidden" class="input-block-level" id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">查询公会信息</button>
+<hr>
+<button class="btn btn-large btn-primary" type="submit">查看全部公会</button>
+<h4>注意:查看全部公会需要将上面的输入框清空</h4>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;否则~~~~~</h3>
+<h1>&nbsp;&nbsp;&nbsp;&nbsp;嘿嘿嘿!!!<h1>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>

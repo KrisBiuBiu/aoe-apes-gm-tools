@@ -1,0 +1,179 @@
+<h3 class="form-signin-heading">综合查询(UTC时间)</h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<select id = "time" name="time"> 
+<option value="UTC">UTC时间</option> 
+<option value="PST">PST时间</option> 
+<option value="BJ">北京时间</option> 
+</select>
+<input type="hidden" class="input-block-level" id="serverid" name="serverid" value="1" req="true" placeholder="服务器ID" exp="^[1-9]\d*$" ts='服务器ID格式错误'>
+<input type="text" class="input-block-level" id="StartTime" name="StartTime" req="true" placeholder="查询开始时间(UTC时间)" ts='查询开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD'})">
+<input type="text" class="input-block-level" id="EndTime" name="EndTime" req="true" placeholder="查询结束时间(UTC时间)" ts='查询结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD'})">
+<select id = "country" name="country">
+<option>--请选择查询地区--</option>
+<option value="AE">阿联酋</option>
+<option value="AF">阿富汗</option>
+<option value="AL">阿尔巴尼亚</option>
+<option value="AM">亚美尼亚</option>
+<option value="AO">安哥拉</option>
+<option value="AR">阿根廷</option>
+<option value="AT">奥地利</option>
+<option value="AU">澳大利亚</option>
+<option value="AZ">阿塞拜疆</option>
+<option value="BD">孟加拉</option>
+<option value="BE">比利时</option>
+<option value="BF">布基纳法索</option>
+<option value="BG">保加利亚</option>
+<option value="BH">巴林</option>
+<option value="BI">布隆迪</option>
+<option value="BJ">贝宁</option>
+<option value="BL">巴勒斯坦</option>
+<option value="BN">文莱</option>
+<option value="BO">玻利维亚</option>
+<option value="BR">巴西</option>
+<option value="BW">博茨瓦纳</option>
+<option value="BY">白俄罗斯</option>
+<option value="CA">加拿大</option>
+<option value="CF">中非</option>
+<option value="CG">刚果</option>
+<option value="CH">瑞士</option>
+<option value="CL">智利</option>
+<option value="CM">喀麦隆</option>
+<option value="CN">中国</option>
+<option value="CO">哥伦比亚</option>
+<option value="CR">哥斯达黎加</option>
+<option value="CS">捷克</option>
+<option value="CU">古巴</option>
+<option value="CY">塞浦路斯</option>
+<option value="DE">德国</option>
+<option value="DK">丹麦</option>
+<option value="DO">多米尼加共和国</option>
+<option value="DZ">阿尔及利亚</option>
+<option value="EC">厄瓜多尔</option>
+<option value="EE">爱沙尼亚</option>
+<option value="EG">埃及</option>
+<option value="ES">西班牙</option>
+<option value="ET">埃塞俄比亚</option>
+<option value="FI">芬兰</option>
+<option value="FJ">斐济</option>
+<option value="FR">法国</option>
+<option value="GA">加蓬</option>
+<option value="GB">英国</option>
+<option value="GD">格林纳达</option>
+<option value="GE">格鲁吉亚</option>
+<option value="GH">加纳</option>
+<option value="GN">几内亚</option>
+<option value="GR">希腊</option>
+<option value="GT">危地马拉</option>
+<option value="HK">香港特别行政区</option>
+<option value="HN">洪都拉斯</option>
+<option value="HU">匈牙利</option>
+<option value="ID">印度尼西亚</option>
+<option value="IE">爱尔兰</option>
+<option value="IL">以色列</option>
+<option value="IN">印度</option>
+<option value="IQ">伊拉克</option>
+<option value="IR">伊朗</option>
+<option value="IS">冰岛</option>
+<option value="IT">意大利</option>
+<option value="JM">牙买加</option>
+<option value="JO">约旦</option>
+<option value="JP">日本</option>
+<option value="KG">吉尔吉斯坦</option>
+<option value="KH">柬埔寨</option>
+<option value="KP">北朝鲜</option>
+<option value="KR">韩国</option>
+<option value="KT">科特迪瓦共和国</option>
+<option value="KW">科威特</option>
+<option value="KZ">哈萨克</option>
+<option value="LA">老挝</option>
+<option value="LB">黎巴嫩</option>
+<option value="LC">圣卢西亚</option>
+<option value="LI">列支敦士登</option>
+<option value="LK">斯里兰卡</option>
+<option value="LR">利比里亚</option>
+<option value="LT">立陶宛</option>
+<option value="LU">卢森堡</option>
+<option value="LV">拉脱维亚</option>
+<option value="LY">利比亚</option>
+<option value="MA">摩洛哥</option>
+<option value="MC">摩纳哥</option>
+<option value="MD">摩尔多瓦</option>
+<option value="MG">马达加斯加</option>
+<option value="ML">马里</option>
+<option value="MM">缅甸</option>
+<option value="MN">蒙古</option>
+<option value="MO">澳门地区</option>
+<option value="MT">马耳他</option>
+<option value="MU">毛里求斯</option>
+<option value="MW">马拉维</option>
+<option value="MX">墨西哥</option>
+<option value="MY">马来西亚</option>
+<option value="MZ">莫桑比克</option>
+<option value="NA">纳米比亚</option>
+<option value="NE">尼日尔</option>
+<option value="NG">尼日利亚</option>
+<option value="NI">尼加拉瓜</option>
+<option value="NL">荷兰</option>
+<option value="NO">挪威</option>
+<option value="NP">尼泊尔</option>
+<option value="NZ">新西兰</option>
+<option value="OM">阿曼</option>
+<option value="PA">巴拿马</option>
+<option value="PE">秘鲁</option>
+<option value="PG">巴布亚新几内亚</option>
+<option value="PH">菲律宾</option>
+<option value="PK">巴基斯坦</option>
+<option value="PL">波兰</option>
+<option value="PT">葡萄牙</option>
+<option value="PY">巴拉圭</option>
+<option value="QA">卡塔尔</option>
+<option value="RO">罗马尼亚</option>
+<option value="RU">俄罗斯</option>
+<option value="SA">沙特阿拉伯</option>
+<option value="SC">塞舌尔</option>
+<option value="SD">苏丹</option>
+<option value="SE">瑞典</option>
+<option value="SG">新加坡</option>
+<option value="SI">斯洛文尼亚</option>
+<option value="SK">斯洛伐克</option>
+<option value="SM">圣马力诺</option>
+<option value="SN">塞内加尔</option>
+<option value="SO">索马里</option>
+<option value="SY">叙利亚</option>
+<option value="SZ">斯威士兰</option>
+<option value="TD">乍得</option>
+<option value="TG">多哥</option>
+<option value="TH">泰国</option>
+<option value="TJ">塔吉克斯坦</option>
+<option value="TM">土库曼</option>
+<option value="TN">突尼斯</option>
+<option value="TR">土耳其</option>
+<option value="TW">台湾省</option>
+<option value="TZ">坦桑尼亚</option>
+<option value="UA">乌克兰</option>
+<option value="UG">乌干达</option>
+<option value="US">美国</option>
+<option value="UY">乌拉圭</option>
+<option value="UZ">乌兹别克</option>
+<option value="VC">圣文森特岛</option>
+<option value="VE">委内瑞拉</option>
+<option value="VN">越南</option>
+<option value="YE">也门</option>
+<option value="YU">南斯拉夫联盟</option>
+<option value="ZA">南非</option>
+<option value="ZM">赞比亚</option>
+<option value="ZR">扎伊尔</option>
+<option value="ZW">津巴布韦</option>
+<option value="none">无国籍</option>
+</select>
+<input type="hidden" class="input-block-level" id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='10000'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">查询</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>

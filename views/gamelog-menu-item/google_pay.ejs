@@ -1,0 +1,27 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="StartTime" name="StartTime" req="true" placeholder="开始时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text" class="input-block-level" id="EndTime" name="EndTime" req="true" placeholder="结束时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="hidden" class="input-block-level" id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='50'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+<p>查看测试订单<input type="checkbox" id="test" name="test" value="yes"></p>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+<hr>
+<h3 class="form-signin-heading">礼包购买查询(根据玩家ID)</h3>
+<form action="/gamelog/result/google_pay1" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="userid" name="userid" req="true" placeholder="玩家ID" exp="^[1-9]\d*$" ts='玩家ID格式错误'>
+<input type="text" class="input-block-level" id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='50'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+<p>注意:<br>1.测试订单没有订单号</p>
+<script type="text/javascript">
+  F.st();
+</script>

@@ -1,0 +1,50 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="region" name="region" value="1" req="true" placeholder="大区ID" exp="^[1-9]\d*$" ts='大区ID格式错误'>
+<div><textarea rows="3" id="jsonstr" name="jsonstr" req="true" placeholder="[]int64 的json对象"></textarea></div>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+    F.st();
+</script>
+<pre>
+模板对象:
+type Draft struct {
+	ID            int64      `json:"id,omitempty"`
+	State         int        `json:"state,omitempty"`
+	Type          int        `json:"type,omitempty"`
+	Banner        string     `json:"banner,omitempty"`
+	Icon          string     `json:"icon,omitempty"`
+	Title         string     `json:"title,omitempty"`
+	SubTitle      string     `json:"sub_title,omitempty"`
+	Desc          string     `json:"desc,omitempty"`
+	PreviewDesc   string     `json:"pre_desc,omitempty"`
+	CanTransfer   bool       `json:"can_transfer,omitempty"`
+	Index         int16      `json:"index,omitempty"`
+	TagId         int        `json:"tag_id,omitempty"`
+	Tag           string     `json:"tag,omitempty"`
+	TemplateIds   string     `json:"template_ids,omitempty"`
+	PreviewTime   string     `json:"preview_time,omitempty"`
+	BeginTime     string     `json:"begin_time,omitempty"`
+	EndTime       string     `json:"end_time,omitempty"`
+	HasReward     bool       `json:"has_reward,omitempty"`
+	HasRankReward bool       `json:"has_rank_reward,omitempty"`
+	CloseTime     string     `json:"close_time,omitempty"`
+	GdConfig      int16      `json:"gd_config,omitempty"`
+	Mode          int        `json:"mode,omitempty"`
+	Servers       string     `json:"servers,omitempty"`
+	RuleDesc      string     `json:"rule_desc,omitempty"`
+	Versuses      [][]string `json:"versuses,omitempty"`
+	CreatorID     string     `json:"creator_id,omitempty"`
+	CreatorName   string     `json:"creator_name,omitempty"`
+	CreatedTime   string     `json:"created_time,omitempty"`
+	UpdaterId     string     `json:"updater_id,omitempty"`
+	UpdaterName   string     `json:"updater_name,omitempty"`
+	UpdatedTime   string     `json:"updated_time,omitempty"`
+	Others        int        `json:"others,omitempty"`
+}
+</pre>

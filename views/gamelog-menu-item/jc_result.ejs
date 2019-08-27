@@ -1,0 +1,72 @@
+<%
+var stime = data.StartTime;
+var etime = data.EndTime;
+%>
+<form action="/gamelog/result/jc"  method="post">
+<input type="text"  id="serverid" name="serverid" value="1" req="true" placeholder="服务器ID" exp="^[1-9]\d*$" ts='服务器ID格式错误'>
+<input type="text"  id="StartTime" value="<%=stime %>" name="StartTime" req="true" placeholder="开始时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='注册开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text"  id="EndTime" value="<%=etime %>" name="EndTime" req="true" placeholder="结束时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='注册结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="hidden"  id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='50'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>
+
+<a class="btn" id="exportExcel" href="javascript:;">导出Excel</a>
+<h4>1.成功匹配并推送玩家共<b><%=data.gcmarray.length %></b>人</h4>
+<h4>2.当日注册未匹配玩家共<b><%=data.useridarray.length %></b>人</h4>
+<h4>3.成功匹配玩家列表:</h4>
+<table border="1px" id="targetTable" name="targetTable">
+	<tr>
+		<th>序号</th>
+		<th>玩家id</th>
+		<th>zoneID</th>
+		<th>regID</th>
+	</tr>
+<% var k=1 %>
+<% for(var i=0;i < data.gcmarray.length;i++){ %>
+<tr>
+	<td><%=k %></td>
+	<th><%=data.gcmarray[i].uid %></th>
+	<td><%=data.gcmarray[i].zoneID %></td>
+	<td><%=data.gcmarray[i].regID %></td>
+</tr>
+<% k++ %>
+<% } %>
+</table>
+
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '推送情况.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '推送情况'));
+    });
+});
+</script>

@@ -1,0 +1,81 @@
+
+<%
+var stime = data.StartTime;
+var etime = data.EndTime;
+%>
+<form action="/gamelog/result/count_rebel"  method="post">
+<select id="serverid" name="serverid">
+  <option value="1">--请选择服务器--</option>
+  <% for(var i=1;i < 10;i++){ %>
+  <option value = "<%=i %>"><%=i %></option>
+  <% } %>
+</select>
+<input type="text"  id="StartTime" value="<%=stime %>" name="StartTime" req="true" placeholder="开始时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="hidden"  id="EndTime" name="EndTime" req="true" placeholder="结束时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="hidden"  id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='500'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+<p>查看当日注册玩家<input type="checkbox" id="test" name="test" value="yes"></p>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>
+
+
+<div class="row-fluid">
+	<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+</div>
+<%
+var rebel1count = 0;
+for(var i=0;i < data.everyRebel1.length;i++){
+	rebel1count += data.everyRebel1[i];
+}
+%>
+<p>人数总计:<%=data.everyRebel.length %></p>
+<p>次数总计:<%=rebel1count %></p>
+<table border='1' id="targetTable" name="targetTable">
+<tr>
+	<th>玩家id</th>
+	<th>打怪次数</th>
+</tr>
+<% for(i=0;i < data.everyRebel.length;i++){ %>
+<tr>
+	<td><%=data.everyRebel[i] %></td>
+	<td><%=data.everyRebel1[i] %></td>
+</tr>
+<% } %>
+</table>
+
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '玩家打怪行为统计.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '玩家打怪行为统计'));
+    });
+});
+</script>

@@ -1,0 +1,17 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="region" name="region" value="1" req="true" placeholder="大区ID" exp="^[1-9]\d*$" ts='大区ID格式错误'>
+<input type="text" class="input-block-level" id="serverid" name="serverid" req="true" placeholder="服务器ID" exp="^[1-9]\d*$" ts='服务器ID格式错误'>
+<input type="text" class="input-block-level" id="userid" name="userid" req="true" placeholder="玩家ID" exp="^[1-9]\d*$" ts='玩家ID格式错误'>
+<input type="text" class="input-block-level" id="diamond" name="diamond" req="true" placeholder="钻石数量" exp="^[1-9]\d*$" ts='钻石数量格式错误'>
+<label class='radio-inline'><input type="radio" name="opval" id="opval" value="1" checked="true" req='true'>增加</label>
+<label class='radio-inline'><input type="radio" name="opval" id="opval" value="0" req='true'> 扣除</label>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+    F.st();
+</script>

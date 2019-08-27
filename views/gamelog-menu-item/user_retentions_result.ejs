@@ -1,0 +1,105 @@
+<%
+var stime = data.StartTime;
+var etime = data.EndTime;
+var serverid = data.serverid;
+%>
+<form action="/gamelog/result/user_retentions" method="post">
+<select id="serverid" name="serverid">
+  <option value="<%=serverid %>">--请选择服务器--</option>
+  <% for(var i=1;i < 10;i++){ %>
+  <option value = "<%=i %>"><%=i %></option>
+  <% } %>
+</select>
+<input type="text" id="StartTime" name="StartTime" value="<%=stime %>" req="true" placeholder="查询开始时间 2006-01-02  使用的是UTC时间标准" ts='查询开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD '})">
+<input type="text" id="EndTime" name="EndTime" value="<%=etime %>" req="true" placeholder="查询结束时间 2006-01-02  使用的是UTC时间标准" ts='查询结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD '})">
+<input type="hidden" class="input-block-level" id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='10000'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">查询</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>
+
+<h2>多日次留查询结果:</h2>
+<% if(data.ret==0){ %>
+<div class="row-fluid">
+	<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+	<div class='span1'>
+		<form action="/gamelog/result/user_retention" class="form-signin" method="post" target="_blank">
+		<input type="hidden" id="serverid" name="serverid" value='1' req="true" placeholder="服务器ID" exp="^[1-9]\d*$" ts='服务器ID格式错误'>
+		<input type="text" id="StartTime" name="StartTime" req="true" placeholder="请选择要查询的日期" ts='注册开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+		<input type="hidden"  id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='10000' >
+		<input type='hidden' name='page_id' id='page_id' value='1'>
+		<button class="btn" type="submit">单日查询</button>
+		<% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+		</form>
+	</div>
+</div>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-bordered" id="targetTable" name="targetTable">
+	<thead>
+		<tr>
+			<th>日期(年月日)</th>
+			<th>当日新增用户(位)</th>
+			<th>次日登录用户(位)</th>
+			<th>次日留存率(%)</th>
+			<th>七日登录用户(位)</th>
+			<th>七日留存率(%)</th>
+			<th>30日登录用户(位)</th>
+			<th>30日留存率(%)</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% var date1=data.StartTime; %>
+		<% date1 = new Date(Date.parse(date1.replace(/-/g, "/"))); %>
+		<% date1 = date1.getTime(); %>
+		<% var date2=data.EndTime; %>
+		<% date2 = new Date(Date.parse(date2.replace(/-/g, "/"))); %>
+		<% date2 = date2.getTime(); %>
+		<% var count = parseInt(parseInt(date2)-parseInt(date1))/86400000; %>
+		<% for(var a=0;a < count;a++){ %>
+		<tr>
+		<% var date3 = new Date(date1+86400000*a) %>
+		<% Y = date3.getFullYear() + '-'; %>
+		<% M = (date3.getMonth() + 1 < 10 ? '0'+(date3.getMonth()+1):date3.getMonth()+1) + '-';  %>
+		<% D = date3.getDate() + ' ';  %>
+		<td><%=Y+M+D  %></td>
+		<td><%=data.result[a] %></td>
+		<td><%=data.result1[a] %></td>
+		<% var TheSecondDates=parseInt(data.result1[a]) * 100 /parseInt(data.result[a]); %>
+		<% var TheSecondDate=TheSecondDates.toFixed(2); %>
+		<td><%=TheSecondDate %></td>
+		<td><%=data.result2[a] %></td>
+		<% var TheSeventhDates=parseInt(data.result2[a]) * 100 /parseInt(data.result[a]); %>
+		<% var TheSeventhDate=TheSeventhDates.toFixed(2); %>
+		<td><%=TheSeventhDate %></td>
+		<td><%=data.result3[a] %></td>
+		<% var TheThirtiethDates=parseInt(data.result3[a]) * 100 /parseInt(data.result[a]); %>
+		<% var TheThirtiethDate=TheThirtiethDates.toFixed(2); %>
+		<td><%=TheThirtiethDate %></td>
+		<tr>
+		<% } %>
+</table>
+</div>
+<% }else{ %>
+<p><%= data.result %></p>
+<% } %>
+
+<script language="javascript">
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '玩家留存率多日查询列表.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '玩家留存率多日查询列表'));
+    });
+});
+</script>

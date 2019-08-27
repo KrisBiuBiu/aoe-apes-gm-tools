@@ -1,0 +1,36 @@
+<div id="container" class="container-fluid">
+<div class="row-fluid">
+    <div class="span3">
+        <div class="well sidebar-nav" style="height:800px; overflow-y:auto">
+            <ul >
+                 <% if (nav=='gamedata') { %>
+                    <% if (session.gamedata_link_urls.length) { %>
+                    <% session.gamedata_link_urls.forEach(function(link){ %>
+                    <li <% if ( navc ==link.tg ) { %>  class="active" <% } %>><a href="<%= link.url %>/<%= link.tg %>"><%= link.ctx %><% if(link.supercmd){ %>[admin]<% } %></a></li>
+                    <% }) %>
+                    <% } %>
+                 <% }else if (nav=='gamelog'){ %>
+                    <% if (session.gamelog_link_urls.length) { %>
+                    <% session.gamelog_link_urls.forEach(function(link){ %>
+                    <li <% if ( navc ==link.tg ) { %>  class="active" <% } %>><a href="<%= link.url %>/<%= link.tg %>"><%= link.ctx %><% if(link.supercmd){ %>[admin]<% } %></a></li>
+                    <% }) %>
+                    <% } %>
+                 <% } %>
+            </ul>
+        </div>
+    </div>
+    <div class="span9">
+            <div class="row-fluid">
+                <% if (item) { %>
+                    <div class="span8 offset2">
+                    <%- partial(item,{tg:navc,url:url,ctx:ctx}) %>
+                    </div>
+                <% } else if (result){ %>
+                    <div class="span12">
+                    <%- partial(result,{tg:navc,data:data}) %>
+                    </div>
+                <% } %>
+            </div>
+    </div>
+</div>
+</div>

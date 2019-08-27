@@ -1,0 +1,153 @@
+<%
+var stime = data.StartTime;
+var etime = data.EndTime;
+var timeid = data.timeid;
+var timevalue;
+if(timeid == "UTC"){
+	timevalue = "UTC时间";
+}else if(timeid == "PST"){
+	timevalue = "PST时间";
+}else if(timeid == "BJ"){
+	timevalue = "北京时间";
+}
+%>
+<h3>综合查询(UTC时间)</h3>
+<div style="width:700px">
+<form action="/gamelog/result/regionall" method="post">
+<select id = "time" name="time"> 
+<option value="<%=timeid %>"><%=timevalue %></option>
+<option value="UTC">UTC时间</option> 
+<option value="PST">PST时间</option> 
+<option value="BJ">北京时间</option> 
+</select>
+<select id = "country" name="country">
+<option>--请选择查询地区--</option>
+<% data.ipcarray.forEach(function(v){ %>
+<%
+	var countryname;
+	for(var i in data.country1){
+		if(i == v){
+			countryname = data.country1[i];
+		}
+	}
+%>
+	<option value="<%=v %>"><%=v %><%=countryname %></option>
+<% }) %>
+</select>
+<input type="hidden"id="serverid" name="serverid" value="1" req="true" placeholder="服务器ID" exp="^[1-9]\d*$" ts='服务器ID格式错误'>
+<input type="text"  id="StartTime" name="StartTime" value="<%=stime %>" req="true" placeholder="查询开始时间(UTC时间)" ts='查询开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD'})">
+<input type="text"  id="EndTime" name="EndTime" value="<%=etime %>" req="true" placeholder="查询结束时间(UTC时间)" ts='查询结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD'})">
+<input type="hidden"  id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='10000'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">查询</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+</div>
+
+<script type="text/javascript">
+  F.st();
+</script>
+<h2>综合查询结果:</h2>
+<% if(data.ret==0){ %>
+<div class="row-fluid">
+	<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+</div>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-bordered" id="targetTable" name="targetTable">
+	<thead>
+		<tr>
+			<th>日期(年月日)</th>
+			<th>注册人数</th>
+			<th>激活设备数</th>
+			<th>账号次留数</th>
+			<th>设备次留数</th>
+			<th>账号次留率(%)</th>
+			<th>设备次留率(%)</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% var date1=data.StartTime; %>
+		<% date1 = new Date(Date.parse(date1.replace(/-/g, "/"))); %>
+		<% date1 = date1.getTime(); %>
+		<% var date2=data.EndTime; %>
+		<% date2 = new Date(Date.parse(date2.replace(/-/g, "/"))); %>
+		<% date2 = date2.getTime(); %>
+		<% var count = parseInt(parseInt(date2)-parseInt(date1))/86400000; %>
+		<!-- 合计 -->
+		<% var totalhuman = 0; %>
+		<% var totaldevice = 0; %>
+		<% var totalhumans = 0; %>
+		<% var totaldevices = 0; %>
+		<% for(var a=0;a < count;a++){ %>
+		<tr>
+		<% var date3 = new Date(date1+86400000*a) %>
+		<% Y = date3.getFullYear() + '-'; %>
+		<% M = (date3.getMonth() + 1 < 10 ? '0'+(date3.getMonth()+1):date3.getMonth()+1) + '-';  %>
+		<% D = date3.getDate() + ' ';  %>
+		<!-- 日期 -->
+		<td><%=Y+M+D  %></td>
+		<!-- 注册人数 -->
+		<td><%=data.registerresult[a].length %></td>
+		<% totalhuman += data.registerresult[a].length %>
+		<!-- 激活设备数 -->
+		<td><%=data.deviceresult[a].length %></td>
+		<% totaldevice += data.deviceresult[a].length %>
+		<!-- 账号次留数 -->
+		<td><%=data.afterresult[a].length %></td>
+		<% totalhumans += data.afterresult[a].length %>
+		<!-- 设备次留数 -->
+		<td><%=data.afterdeviceresult[a].length %></td>
+		<% totaldevices += data.afterdeviceresult[a].length %>
+		<!-- 次日留存率 -->
+		<% var afterDates = parseInt(data.afterresult[a].length) * 100 /parseInt(data.registerresult[a].length); %>
+		<% var afterDate=afterDates.toFixed(2); %>
+		<%
+		if(isNaN(afterDate)){
+			afterDate = 0;
+		}
+		%>
+		<td><%=afterDate %></td>
+		<!-- 设备留存率 -->
+		<% var afterDates1 = parseInt(data.afterdeviceresult[a].length) * 100 /parseInt(data.deviceresult[a].length); %>
+		<% var afterDate1=afterDates1.toFixed(2); %>
+		<%
+		if(isNaN(afterDate1)){
+			afterDate1 = 0;
+		}
+		%>
+		<td><%=afterDate1 %></td>
+		<tr>
+		<% } %>
+		<!-- 合计 -->
+		<th>合计</th>
+		<th><%=totalhuman %></th>
+		<th><%=totaldevice %></th>
+		<th><%=totalhumans %></th>
+		<th><%=totaldevices %></th>
+		<% var totalhumansDate = parseInt(totalhumans)*100/parseInt(totalhuman); %>
+		<% totalhumansDate = totalhumansDate.toFixed(2); %>
+		<th><%=totalhumansDate %></th>
+		<% var totaldevicesDate = parseInt(totaldevices)*100/parseInt(totaldevice); %>
+		<% totaldevicesDate = totaldevicesDate.toFixed(2); %>
+		<th><%=totaldevicesDate %></th>
+</table>
+<p><%=data.ipcarray %></p>
+</div>
+<% }else{ %>
+<p><%= data.result %></p>
+<% } %>
+
+<script language="javascript">
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '玩家留存率多日查询列表.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '玩家留存率多日查询列表'));
+    });
+});
+</script>

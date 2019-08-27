@@ -1,0 +1,18 @@
+<div id="container" class="container">
+<div class="hero-unit">
+    <h2>欢迎来到 Apes Age-GMTOOL</h2>
+    <p>Apes Age 项目 内部GM系统。</p>
+<% if (!user) { %>
+    <p>
+        <a class="btn btn-primary btn-large" href="/user/login">登录</a>
+    </p>
+<% }else{ %>
+    <p>
+        <% if (user.admin) { %>
+         <a class="btn btn-large" href="/user/reg">管理员配置</a>
+        <% } %>
+        <a class="btn btn-primary btn-large" href="/user/logout">退出</a>
+    </p>
+<% } %>
+</div>
+</div>

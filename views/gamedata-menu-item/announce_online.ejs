@@ -1,0 +1,45 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="region" name="region" value="1" req="true" placeholder="大区ID" exp="^[1-9]\d*$" ts='大区ID格式错误'>
+<div><textarea rows="3" id="jsonstr" name="jsonstr" req="true" placeholder="公告内容 json格式的数据"></textarea></div>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+    F.st();
+</script>
+<pre>
+模板对象:
+type Announce struct {
+	Id          int32   `json:"id"`
+	Title       int32   `json:"title"`
+	Content     int32   `json:"content"`
+	Icon        string  `json:"icon"`
+	StartTime   int64   `json:"start_time"`
+	EndTime     int64   `json:"end_time"`
+	Filter      []int8  `json:"filter"`
+	ServerGroup []int16 `json:"servers"`
+	PopUp       bool    `json:"popup"`
+	Priority    int8    `json:"priority"`
+	Tparms      []Parm  `json:"title_parms"`
+	Cparms      []Parm  `json:"content_parms"`
+}
+/*
+#多语言邮件参数类型type
+PARAM_ITME    = 1 // 道具
+PARAM_OFFICER = 2 // 副官
+PARAM_STRING  = 3 // 字符串
+
+KEY_ITEM    = "item"
+KEY_OFFICER = "officer"
+KEY_STRING  = "string"
+*/
+type Parm struct {
+	Pos  int8   `json:"pos"`  //参数位于content中的下标
+	Type int8   `json:"type"` //多语言邮件参数类型
+	Val  string `json:"val"`  //参数值
+}
+  </pre>

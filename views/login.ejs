@@ -1,0 +1,71 @@
+<div id="container" class="container">
+<div class="hero-unit">
+    <form action="/user/login" class="form-signin" method="post" onsubmit="return checkfrm();">
+        <h3 class="form-signin-heading">管理员登陆</h3>
+        <input type="text" class="input-block-level" id="username" name="username" req="true" placeholder="用户名" ts='请填写用户名'>
+        <input type="password" class="input-block-level" id="password" name="password" req="true" placeholder="密码" ts='请填写密码'>
+        <% if (csrf) { %>
+        <input type="hidden" name="_csrf" value='<%= csrf %>'>
+        <% } %>
+        <button class="btn btn-large btn-primary" type="submit">登陆</button>
+    </form>
+</div>
+</div>
+<script type="text/javascript">
+function checkfrm(){
+    var username = $('#username').val();
+    if(username ==""){
+        ui.alert('请填写用户名',1000,false);return false;
+    }
+    var pwd = $('#password').val();
+    if(pwd ==""){
+        ui.alert('请填写密码',1000,false);return false;
+    }
+    if(!checkLoginCookie()){
+        ui.error('三个分钟以内只能输入三次错误用户名或者密码');
+        return false;
+    }else{
+        F.st();
+    }
+}
+function getCookie(objName){
+    var arrStr = document.cookie.split("; ");
+    for(var i = 0;i < arrStr.length;i ++){
+        var temp = arrStr[i].split("=");
+        if(temp[0] == objName) return unescape(temp[1]);
+    } 
+}
+function delCookie(name){
+    var date = new Date();
+    date.setTime(date.getTime() - 10000);
+    document.cookie = name + "=a; expires=" + date.toGMTString();
+}
+function addCookie(objName,objValue,objHours){
+    var str = objName + "=" + escape(objValue);
+    if(objHours > 0){//为0时不设定过期时间，浏览器关闭时cookie自动消失
+    var date = new Date();
+    var ms = objHours*3600*1000;
+    date.setTime(date.getTime() + ms);
+    str += "; expires=" + date.toGMTString();
+    }
+    document.cookie = str;
+    //alert("添加cookie成功");
+}
+function checkLoginCookie(){
+    var username = $('#username').val();
+    var _LOGINTIMES_ = 3;//固定时间内只能登录3次
+    var _LOGINTIMESPAN_ =180000;//固定多长时间：毫秒
+    var lastLoginTime = getCookie('lastlogin');
+    var loginTimes = getCookie('logintimes');
+    var timestamp=new Date().getTime();
+    lastLoginTime = parseInt(lastLoginTime);
+    loginTimes = parseInt(loginTimes);
+    lastLoginTime = timestamp - lastLoginTime;
+    if((lastLoginTime < _LOGINTIMESPAN_) && (loginTimes > _LOGINTIMES_) ){
+        return false;
+    }
+    else{
+        return true;
+    }
+}
+</script>

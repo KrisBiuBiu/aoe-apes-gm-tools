@@ -1,0 +1,23 @@
+                ul.nav.nav-pills
+                  li(role='presentation' class=!data.type?'active':'')
+                    a(href=`/e/log/secret?type=email`) 邮箱修改
+                  li(role='presentation' class=data.type==='password'?'active':'')
+                    a(href=`/e/log/secret?type=password`) 密码修改
+                  li(role='presentation' class=data.type==='mobile'?'active':'')
+                    a(href=`/e/log/secret?type=mobile`) 手机修改
+                  li(role='presentation' class=data.type==='username'?'active':'')
+                    a(href=`/e/log/secret?type=username`) 用户名修改
+					
+					
+					
+					
+					          .col-xs-12.col-md-3
+            .form
+              .form-group
+                label 开始时间
+                input.form-control#startTime(placeholder="开始时间" req="true" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})")
+              .form-group
+                label 结束时间  
+                input.form-control#endTime(placeholder="结束时间" req="true" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})")
+              .form-group
+                button.btn.btn-primary.btn-block() 提交  

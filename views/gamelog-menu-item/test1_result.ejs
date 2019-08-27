@@ -1,0 +1,168 @@
+<style type="text/css">
+	td{
+		text-overflow:ellipsis;
+		white-space:nowrap;
+		overflow:hidden;
+	}
+	table{
+		table-layout:fixed;
+	}
+
+</style>
+<%
+var stime = data.StartTime;
+var etime = data.EndTime;
+var timeid = data.timeid;
+var timevalue;
+if(timeid == "UTC"){
+	timevalue = "UTC时间";
+}else if(timeid == "BJ"){
+	timevalue = "北京时间";
+}
+%>
+<form action="/gamelog/result/test1"  method="post">
+<select id = "time" name="time"> 
+<option value="<%=timeid %>"><%=timevalue %></option>
+<option value="UTC">UTC时间</option>
+<option value="BJ">北京时间</option> 
+</select>
+<input type="text"  id="StartTime" name="StartTime" req="true" value="<%=stime %>" placeholder="开始时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='注册开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text"  id="EndTime" name="EndTime" req="true" value="<%=etime %>" placeholder="结束时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='注册结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>
+<h2>推送操作查询结果:</h2>
+<% if(data.ret==0){ %>
+
+<% if(data.result.length>0){%>
+<div class="row-fluid">
+	<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+</div>
+<% } %>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-bordered" id="targetTable" name="targetTable">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>StartTime</th>
+			<th>EndTime</th>
+			<th>PostTime</th>
+			<th>Button</th>
+		</tr>
+		<tr>
+			<th>序号</th>
+			<th>注册开始时间</th>
+			<th>注册结束时间</th>
+			<th>推送时间</th>
+			<th>查看推送情况</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if(data.result.length>0){%>
+		<% var k=1 %>
+		<% data.result.forEach(function(v){ %>
+		<tr>
+		<td><%=k %></td>
+		<%
+		var timeid = data.timeid;
+		if(timeid == "UTC"){
+			var date1 = new Date(parseInt(v.starttime))
+		}else if(timeid == "BJ"){
+			var date1 = new Date(parseInt(v.starttime+28800000))
+		}
+		%>
+		<% Y1 = date1.getFullYear() + '-'; %>
+		<% M1 = (date1.getMonth() + 1 < 10 ? '0'+(date1.getMonth()+1):date1.getMonth()+1) + '-';  %>
+		<% D1 = date1.getDate() + '   ';  %>
+		<% h1 = date1.getHours() + ':';  %>
+		<% m1 = date1.getMinutes() + ':';  %>
+		<% s1 = date1.getSeconds() + ' ';  %>
+		<td><%=Y1+M1+D1+h1+m1+s1 %></td>
+		<%
+		var timeid = data.timeid;
+		if(timeid == "UTC"){
+			var date2 = new Date(parseInt(v.endtime))
+		}else if(timeid == "BJ"){
+			var date2 = new Date(parseInt(v.endtime+28800000))
+		}
+		%>
+		<% Y2 = date2.getFullYear() + '-'; %>
+		<% M2 = (date2.getMonth() + 1 < 10 ? '0'+(date2.getMonth()+1):date2.getMonth()+1) + '-';  %>
+		<% D2 = date2.getDate() + '   ';  %>
+		<% h2 = date2.getHours() + ':';  %>
+		<% m2 = date2.getMinutes() + ':';  %>
+		<% s2 = date2.getSeconds() + ' ';  %>
+		<td><%=Y2+M2+D2+h2+m2+s2 %></td>
+		<%
+		var timeid = data.timeid;
+		if(timeid == "UTC"){
+			var date3 = new Date(parseInt(v.posttime))
+		}else if(timeid == "BJ"){
+			var date3 = new Date(parseInt(v.posttime+28800000))
+		}
+		%>
+		<% Y3 = date3.getFullYear() + '-'; %>
+		<% M3 = (date3.getMonth() + 1 < 10 ? '0'+(date3.getMonth()+1):date3.getMonth()+1) + '-';  %>
+		<% D3 = date3.getDate() + '   ';  %>
+		<% h3 = date3.getHours() + ':';  %>
+		<% m3 = date3.getMinutes() + ':';  %>
+		<% s3 = date3.getSeconds() + ' ';  %>
+		<td><%=Y3+M3+D3+h3+m3+s3 %></td>
+		<td>
+		<form action="/gamelog/result/test"  method="post">
+		<input type="hidden"  id="StartTime" name="StartTime" req="true" value="<%=v.starttime %>" placeholder="开始时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='注册开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+		<input type="hidden"  id="EndTime" name="EndTime" req="true" value="<%=v.endtime %>" placeholder="结束时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='注册结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+		<input type="hidden"  id="PostTime" name="PostTime" req="true" value="<%=v.posttime %>">
+		<input type="hidden" id="time" name="time" req="true" value="<%=data.timeid %>">
+		<button type="submit">提交</button>
+		<% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+		</form>
+		</td>
+		</tr>
+		<% k++; %>
+		<% }) %>
+		<% } %>
+	</tbody>
+</table>
+</div>
+<% }else{ %>
+<p><%= data.result %></p>
+<% } %>
+
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '玩家战力列表.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '玩家战力列表'));
+    });
+});
+</script>

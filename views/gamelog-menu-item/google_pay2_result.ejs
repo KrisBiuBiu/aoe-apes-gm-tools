@@ -1,0 +1,128 @@
+<style type="text/css">
+	td{
+		text-overflow:ellipsis;
+		white-space:nowrap;
+		overflow:hidden;
+	}
+	table{
+		table-layout:fixed;
+	}
+</style>
+<%
+var stime = data.StartTime;
+var etime = data.EndTime;
+%>
+<form action="/gamelog/result/google_pay2" method="post">
+<input type="text" id="StartTime" name="StartTime" value="<%=stime %>" req="true" placeholder="开始时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text" id="EndTime" name="EndTime" value="<%=etime %>" req="true" placeholder="结束时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text" id="pageNum" name="pageNum" req="true" placeholder="每页显示数量" exp="^[1-9]\d*$" ts='每页显示数量格式错误' value='50'>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>
+
+<h2>礼包购买统计列表:</h2>
+<% if(data.ret==0){ %>
+
+<% if(data.result.length>0){%>
+<div class="row-fluid">
+	<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+	<% if(data.next_id){%>
+	<div class='span1'>
+		<form action="<%= data.url %>" method="post">
+		<input type="hidden" name="serverid" value='<%=data.serverid%>'>
+		<input type="hidden" name="power" value='<%=data.power%>'>
+		<input type="hidden" name="StartTime" value='<%=data.StartTime%>'>
+		<input type="hidden" name="EndTime" value='<%=data.EndTime%>'>
+		<input type="hidden" name="pageNum" value='<%=data.pageNum%>'>
+		<input type='hidden' name='page_id' value='<%=data.next_id%>'>
+		<button class="btn" type="submit">下一页</button>
+		<% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+		</form>
+	</div>
+	<% } %>
+	<% if(data.prev_id){%>
+	<div class='span1'>
+		<form action="<%= data.url %>" method="post">
+		<input type="hidden" name="serverid" value='<%=data.serverid%>'>
+		<input type="hidden" name="power" value='<%=data.power%>'>
+		<input type="hidden" name="StartTime" value='<%=data.StartTime%>'>
+		<input type="hidden" name="EndTime" value='<%=data.EndTime%>'>
+		<input type="hidden" name="pageNum" value='<%=data.pageNum%>'>
+		<input type='hidden' name='page_id' value='<%=data.prev_id%>'>
+		<button class="btn" type="submit">上一页</button>
+		<% if (csrf) { %>
+		<input type="hidden" name="_csrf" value='<%= csrf %>'>
+		<% } %>
+		</form>
+	</div>
+	<% } %>
+</div>
+<% } %>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-bordered" id="targetTable" name="targetTable">
+	<thead>
+		<tr>
+			<th>礼包价格</th>
+			<th>礼包类型</th>
+			<th>礼包出售数量</th>
+			<th>购买人数</th>
+			<th>促销礼包出售数量</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if(data.result.length>0){%>
+		<% for(var i in data.packagenamearray){ %>
+		<tr>
+		<td><%=data.pricearray[i] %></td>
+		<td><%=data.packagenamearray[i] %></td>
+		<td><%=data.packagecount[i] %></td>
+		<td><%=data.playerarray[i].length %></td>
+		<td><%=data.packageidarray[i].length %></td>
+		</tr>
+		<% } %>
+		<% } %>
+	</tbody>
+</table>
+</div>
+<% }else{ %>
+<p><%= data.result %></p>
+<% } %>
+
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '礼包购买统计列表.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '礼包购买统计列表'));
+    });
+});
+</script>

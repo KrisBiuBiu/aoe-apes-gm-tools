@@ -1,0 +1,111 @@
+	<% if(data.ret == 0){ %>
+	<% var successaccount = 0; %>
+	<% var onlineaccount = 0; %>
+	<%
+	for(var i in data.useridarray){
+	if(parseInt(data.successarray[i]) == 1){
+		successaccount++;
+	}
+	if(parseInt(data.onlinearray[i]) == 1){
+		onlineaccount++;
+	}
+	}
+	%>
+<p>本次推送共计:<%=data.useridarray.length %></p>
+<P>本次成功推送:<%=successaccount %></p>
+<%
+var success1 = successaccount*100/data.useridarray.length
+%>
+<p>推送成功率:<%=success1.toFixed(2) %>%</p>
+<p>推送成功上线玩家:<%=onlineaccount %></p>
+<a class="btn" id="exportExcel" href="javascript:;">导出Excel</a>
+	<%
+	var timeid = data.timeid
+	if(timeid == "UTC"){
+		var date2 = new Date(parseInt(data.posttime));
+	}else if(timeid == "BJ"){
+		var date2 = new Date(parseInt(data.posttime)+28800000)
+	}
+	%>
+	<% Y2 = date2.getFullYear() + '-'; %>
+	<% M2 = (date2.getMonth() + 1 < 10 ? '0'+(date2.getMonth()+1):date2.getMonth()+1) + '-';  %>
+	<% D2 = date2.getDate() + '   ';  %>
+	<% h2 = date2.getHours() + ':';  %>
+	<% m2 = date2.getMinutes() + ':';  %>
+	<% s2 = date2.getSeconds() + ' ';  %>
+<p>推送时间:<%=Y2+M2+D2+h2+m2+s2 %></p>
+<table border="1px" id="targetTable" name="targetTable">
+	<tr>
+		<th>序号</th>
+		<th>玩家id</th>
+		<th>推送情况</th>
+		<th>上线情况</th>
+		<th>玩家最后登录时间</th>
+	</tr>
+<% var k=1 %>
+<% for(var i=0;i < data.useridarray.length;i++){ %>
+<tr>
+	<td><%=k %></td>
+	<td><%=data.useridarray[i] %></td>
+	<% var success; %>
+	<%
+	if(parseInt(data.successarray[i]) == 1){
+		success = "成功";
+	}else{
+		success = "失败";
+	}
+	%>
+	<td><%=success %></td>
+	<% var online; %>
+	<%
+	if(parseInt(data.onlinearray[i]) == 1){
+		online = "已上线";
+	}else{
+		online = "未上线";
+	}
+	%>
+	<td><%=online %></td>
+	<% var date4 = new Date(data.logintimearray[i]) %>
+	<% Y1 = date4.getFullYear() + '-'; %>
+	<% M1 = (date4.getMonth() + 1 < 10 ? '0'+(date4.getMonth()+1):date4.getMonth()+1) + '-';  %>
+	<% D1 = date4.getDate() + '   ';  %>
+	<% h1 = date4.getHours() + ':';  %>
+	<% m1 = date4.getMinutes() + ':';  %>
+	<% s1 = date4.getSeconds() + ' ';  %>
+	<td width="140"><%=Y1+M1+D1+h1+m1+s1 %></td>
+</tr>
+<% k++ %>
+<% } %>
+</table>
+<% }else{ %>
+<p><%= data.result %></p>
+<% } %>
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '推送情况.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '推送情况'));
+    });
+});
+</script>

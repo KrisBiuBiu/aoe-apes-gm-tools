@@ -1,0 +1,139 @@
+<style type="text/css">
+	td{
+		text-overflow:ellipsis;
+		white-space:nowrap;
+		overflow:hidden;
+	}
+	table{
+		table-layout:fixed;
+	}
+
+</style>
+<%
+var stime = data.StartTime;
+var etime = data.EndTime;
+var power = data.power;
+%>
+<form action="/gamelog/result/players_power"  method="post">
+<select id="serverid" name="serverid">
+  <option value="1">--请选择服务器--</option>
+  <% for(var i=1;i < 10;i++){ %>
+  <option value = "<%=i %>"><%=i %></option>
+  <% } %>
+</select>
+<input type="text"  id="power" name="power" req="true" value = "<%=power %>"placeholder="最小Power值" exp="^[1-9]\d*$|^0$" ts='最小Power值格式错误'>
+<input type="text"  id="StartTime" name="StartTime" req="true" value="<%=stime %>" placeholder="注册开始时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='注册开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text"  id="EndTime" name="EndTime" req="true" value="<%=etime %>" placeholder="注册结束时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='注册结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>
+<h2>玩家战力排行查询结果:</h2>
+<% if(data.ret==0){ %>
+
+<% if(data.result.length>0){%>
+<div class="row-fluid">
+	<div class='span2'><a class="btn" id="exportExcel" href="javascript:;">导出Excel</a></div>
+</div>
+<% } %>
+<div class="table-responsive">
+<table class="table table-striped table-hover table-bordered" id="targetTable" name="targetTable">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>UserName</th>
+			<th>Power</th>
+			<th>Diamond</th>
+			<th>Builds</th>
+			<th>Items</th>
+		</tr>
+		<tr>
+			<th>序号</th>
+			<th>玩家名</th>
+			<th>玩家战力</th>
+			<th>钻石数量</th>
+			<th>建筑</th>
+			<th>道具</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if(data.result.length>0){%>
+		<% var k=1 %>
+		<% data.result.forEach(function(v){ %>
+		<tr>
+		<td><%=k %></td>
+		<td><%=v.username %></td>
+		<td><%=v.Power %></td>
+		<td><%=v.Diamond %></td>
+		<td>
+			<%
+			var vs="";
+			if(v.Building.BMap){
+				var builds=v.Building.BMap;
+				var strary=[];
+				for(var ik in builds){
+					strary.push(builds[ik].Type + "=" + builds[ik].Level);
+				}
+				vs=strary.join(',');
+			} %>
+			<%=vs %>
+		</td>
+		<td>
+			<%
+			var vs="";
+			if(v.Items){
+				var items=v.Items;
+				var strary=[];
+				for(var ik in items){
+					strary.push(items[ik].Id + "=" + items[ik].Cnt);
+				}
+				vs=strary.join(',')
+			}
+			 %>
+			<%=vs %>
+		</td>
+		</tr>
+		<% k++; %>
+		<% }) %>
+		<% } %>
+	</tbody>
+</table>
+</div>
+<% }else{ %>
+<p><%= data.result %></p>
+<% } %>
+
+<script language="javascript">
+//表单排序
+var th = $('th'),
+inverse = false;
+th.click(function(){
+	var header = $(this),
+	index = header.index();
+	header.closest('table').find('td').filter(function(){
+		return $(this).index() === index;
+	}).sortElements(function(a, b){
+		a = $(a).text();
+		b = $(b).text();
+		return ( isNaN(a) || isNaN(b) ? a > b : +a > +b) ?inverse ? -1 : 1 :inverse ? 1 : -1;
+	}, function(){
+		return this.parentNode;
+	});
+	inverse = !inverse;
+});
+//数据导出
+$(function(){
+    $('#exportExcel').on('click', function(){
+        var $this = $(this);
+        //设定下载的文件名及后缀
+        $this.attr('download', '玩家战力列表.xls');
+        //设定下载内容
+        $this.attr('href', tableToExcel($('#targetTable')[0], '玩家战力列表'));
+    });
+});
+</script>

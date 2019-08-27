@@ -1,0 +1,26 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="region" name="region" value="1" req="true" placeholder="大区ID" exp="^[1-9]\d*$" ts='大区ID格式错误'>
+<input type="text" class="input-block-level" id="server_id" name="server_id" req="true" placeholder="服务器ID" exp="^[1-9]\d*$" ts='服务器ID格式错误'>
+<div><textarea rows="3" id="contents" name="contents" req="true" placeholder="邮件内容 json格式的数据"></textarea></div>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+    F.st();
+</script>
+
+<pre>
+模板对象:
+type PseverMail struct {
+	En Mail `json:"en"`
+	Cn Mail `json:"cn"`
+}
+type Mail struct {
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+  </pre>

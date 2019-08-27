@@ -1,0 +1,15 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<input type="text" class="input-block-level" id="region" name="region" value="1" req="true" placeholder="大区ID" exp="^[1-9]\d*$" ts='大区ID格式错误'>
+<label class='radio-inline'><input type="radio" name="type" id="type" value="name" checked="true" req='true'>角色名查询</label>
+<label class='radio-inline'><input type="radio" name="type" id="type" value="id" req='true'>ID查询</label>
+<input type="text" class="input-block-level" id="value" name="value" req="true" placeholder="角色名或ID(区分大小写)" ts='角色名或id格式错误'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+    F.st();
+</script>

@@ -1,0 +1,83 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<div><textarea rows="3" id="jsonstr" name="jsonstr" req="true" placeholder="json格式的数据"></textarea></div>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+    F.st();
+</script>
+
+<pre>
+/*
+eg:
+	1道具:
+	Parm{Pos:1,Type=1,Val=2}
+	hell&ltP&gt1&ltP&gtword  -->hell[item:2]word
+	2副官:
+	Parm{Pos:3,Type=2,Val=5}
+	hell&ltP&gt3&ltP&gtword  -->hell[officer:5]word
+	3字符串:
+	Parm{Pos:5,Type=3,Val="o "}
+	hell&ltP&gt5&ltP&gtword  -->hello word
+*/
+模板对象:
+type Notice struct {
+	Id         int32     `json:"id"` //服务器生成
+	Title      string    `json:"name"`
+	Type       int32     `json:"type"`
+	Label      int8      `json:"label"` //类型 [label>1,id=1001+],[label=1,id=1+]
+	Ver        string    `json:"key"`   //全局唯一 kv.xlsx 表中的key值
+	CreateTime int64     `json:"createtime"`
+	Contents   []Content `json:"content"`
+	Parms      []Parm    `json:"params"`
+}
+
+/*
+text:
+	hell&ltP&gt1&ltP&gtword
+lang语言标记:
+	1-CN_LANG-中文cn
+	2-EN_LANG-英文en
+	3-KR_LANG-韩国kr
+	4-JP_LANG-日本jp
+	5-ZH_LANG-繁体zh
+	6-FR_LANG-法国fr
+	7-GER_LANG-德国ger
+	8-RU_LANG-俄罗斯ru
+	9-SP_LANG-西班牙sp
+	10-PO_LANG-葡萄牙po
+	11-IT_LANG-意大利it
+	12-NL_LANG-荷兰nl
+	13-TR_LANG-土耳其tr
+	14-PL_LANG-波兰pl
+	15-ID_LANG-印尼id
+	16-TH_LANG-泰语th
+	17-AR_LANG-阿拉伯语ar
+	18-RO_LANG-罗马尼亚语ro
+	19-FA_LANG-波斯语fa
+*/
+type Content struct {
+	Lang int8   `json:"lang"` //语言标记
+	Text string `json:"text"` //hell&ltP&gt1&ltP&gtword
+}
+
+/*
+#多语言邮件参数类型type
+PARAM_ITME    = 1 // 道具
+PARAM_OFFICER = 2 // 副官
+PARAM_STRING  = 3 // 字符串
+
+KEY_ITEM    = "item"
+KEY_OFFICER = "officer"
+KEY_STRING  = "string"
+*/
+type Parm struct {
+	Pos  int8   `json:"pos"`  //参数位于content中的下标
+	Type int8   `json:"type"` //多语言邮件参数类型
+	Val  string `json:"val"`  //参数值
+}
+</pre>

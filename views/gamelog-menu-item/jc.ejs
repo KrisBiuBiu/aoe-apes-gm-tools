@@ -1,0 +1,23 @@
+<h3 class="form-signin-heading"><%= ctx %></h3>
+<form action="<%= url %>" class="form-signin" method="post">
+<select id = "time" name="time"> 
+<option value="UTC">UTC时间</option>
+<option value="BJ">北京时间</option> 
+</select>
+<input type="text" class="input-block-level" id="serverid" name="serverid" value="1" req="true" placeholder="服务器ID" exp="^[1-9]\d*$" ts='服务器ID格式错误'>
+<input type="text" class="input-block-level" id="StartTime" name="StartTime" req="true" placeholder="开始时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='注册开始时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text" class="input-block-level" id="EndTime" name="EndTime" req="true" placeholder="结束时间 2006-01-02 13:04:00 使用的是UTC时间标准" ts='注册结束时间格式错误' onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<input type="text" class="input-block-level" id="title" name="title" req="true" placeholder="标题"  >
+<input type="text" class="input-block-level" id="ticker" name="ticker" req="true" placeholder="代码"  >
+<input type="text" class="input-block-level" id="txt" name="txt" req="true" placeholder="文本内容"  >
+<p>勾选屏蔽当日注册玩家<input type="checkbox" id="test" name="test" value="yes"></p>
+<input type='hidden' name='page_id' id='page_id' value='1'>
+<button class="btn btn-large btn-primary" type="submit">提交</button>
+  <% if (csrf) { %>
+<input type="hidden" name="_csrf" value='<%= csrf %>'>
+  <% } %>
+</form>
+
+<script type="text/javascript">
+  F.st();
+</script>
